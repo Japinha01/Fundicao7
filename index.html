@@ -107,6 +107,21 @@
   #tx .bar{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
   #tx button{font:inherit;font-size:14px;padding:8px 16px;border-radius:2px;cursor:pointer;border:1px solid var(--line);background:#141b23;color:#c6d3df}
   #tx button.p{background:var(--amber);color:#16202a;border:0;font-weight:700}
+
+  #block{position:fixed;inset:0;background:#0a0e13;display:none;place-items:center;z-index:20;padding:24px}
+  #block .card{max-width:440px;padding:30px 30px 26px;text-align:center}
+  #block .ic{width:76px;height:76px;margin:0 auto 16px;position:relative}
+  #block .ic i{position:absolute;inset:0;border:2px solid var(--amber);transform:rotate(45deg) scale(.72,.42);border-radius:2px}
+  #block .ic i:nth-child(2){opacity:.5;transform:rotate(45deg) scale(.72,.42) translate(9px,9px)}
+  #block .ic i:nth-child(3){opacity:.22;transform:rotate(45deg) scale(.72,.42) translate(18px,18px)}
+  #block h1{font-size:26px;letter-spacing:1px;margin-bottom:4px}
+  #block h1 em{font-style:normal;color:var(--amber)}
+  #block .sub{font-size:11px;letter-spacing:.24em;color:var(--mute);margin-bottom:16px}
+  #block p{font-size:14.5px;line-height:1.6;color:#c6d3df;margin-bottom:12px}
+  #block ul{list-style:none;font-size:13.5px;color:var(--mute);line-height:1.9;text-align:left;
+    display:inline-block;margin-top:4px;border-top:1px solid #263039;padding-top:12px}
+  #block ul b{color:var(--ink);font-weight:600}
+
 </style>
 </head>
 <body>
@@ -140,6 +155,20 @@
 
 <div id="hint" class="panel"><kbd>S</kbd> cursor · <kbd>arrastar</kbd> esteira · <kbd>R</kbd> girar · <kbd>dir.</kbd> demolir · <kbd>espaço</kbd> câmera · <kbd>scroll</kbd> zoom · <kbd>N</kbd> mudo</div>
 <div id="toast"></div>
+
+<div id="block"><div class="card panel">
+  <div class="ic"><i></i><i></i><i></i></div>
+  <h1>FUNDIÇÃO <em>7</em></h1>
+  <div class="sub">DISPONÍVEL APENAS NO COMPUTADOR</div>
+  <p>Este jogo foi feito para mouse e teclado. Numa tela de toque não há como arrastar esteiras, girar construções ou demolir, então preferi bloquear a entrar num estado quebrado.</p>
+  <ul>
+    <li><b>arrastar</b> desenha a linha de esteira inteira</li>
+    <li><b>botão direito</b> demole</li>
+    <li><b>R</b> gira · <b>espaço</b> move a câmera · <b>scroll</b> dá zoom</li>
+  </ul>
+  <p style="margin-top:16px;color:var(--mute);font-size:13px">Abra em um PC ou notebook para jogar.</p>
+</div></div>
+
 <div id="tx"><div class="card panel">
   <h2 id="txTitle">Save em texto</h2>
   <p id="txHelp"></p>
@@ -330,6 +359,7 @@ let tech={}, shipped={}, produced={}, soldTotal=0, earnLog=[];
 let ratio=1, supply=0, demand=0, activeCount=0, itemsMoving=0;
 let cam={x:0,y:0,z:1}, panning=false, panStart=null, dragging=false, lastTile=null, spaceDown=false;
 let T=0, parts=[], floats=[], seedStr='', rnd=Math.random, hasTerminal=false;
+let fastSim=false;
 let epoch=1, colonies=[], readyJump=false, colRate=null;
 
 const el=id=>document.getElementById(id);
@@ -372,7 +402,7 @@ function initAudio(){
   }catch(e){}
 }
 function tone(f,dur,type,vol,to){
-  if(!A.ctx||!A.on)return;
+  if(!A.ctx||!A.on||fastSim)return;
   const t=A.ctx.currentTime,o=A.ctx.createOscillator(),g=A.ctx.createGain();
   o.type=type||'square'; o.frequency.setValueAtTime(f,t);
   if(to)o.frequency.exponentialRampToValueAtTime(Math.max(30,to),t+dur);
@@ -381,7 +411,7 @@ function tone(f,dur,type,vol,to){
   o.connect(g); g.connect(A.master); o.start(t); o.stop(t+dur+.03);
 }
 function thud(vol,freq,dur){
-  if(!A.ctx||!A.on)return;
+  if(!A.ctx||!A.on||fastSim)return;
   const t=A.ctx.currentTime,sr=A.ctx.sampleRate,n=Math.floor(sr*(dur||.12));
   const b=A.ctx.createBuffer(1,n,sr),d=b.getChannelData(0);
   for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);
@@ -544,7 +574,9 @@ function push(x,y,d,item,layer){
 }
 function sell(item,b){
   const v=ITEMS[item].price*(1+.12*(tech.price||0));
-  money+=v; soldTotal+=v; earnLog.push({t:performance.now(),v}); SFX.coin();
+  money+=v; soldTotal+=v;
+  if(fastSim) return;
+  earnLog.push({t:performance.now(),v}); SFX.coin();
   if(floats.length<24&&(!b.lastF||T-b.lastF>.35)){
     b.lastF=T;
     floats.push({x:sx(b.x+.5,b.y+.5),y:sy(b.x+.5,b.y+.5)-B.mercado.h-16,txt:'+'+Math.round(v),life:1.1});
@@ -729,17 +761,18 @@ function update(dt){
   }
 }
 function smoke(b){
-  if(parts.length>200) return;
+  if(fastSim||parts.length>200) return;
   const h=B[b.type].h+22;
   parts.push({x:sx(b.x+.73,b.y+.26),y:sy(b.x+.73,b.y+.26)-h,vx:(Math.random()-.5)*6,vy:-16-Math.random()*10,
     g:-2,r:3,gr:7,life:1.6+Math.random(),max:2.6,col:'190,200,210',smoke:1});
 }
 function spark(b){
-  if(parts.length>200) return;
+  if(fastSim||parts.length>200) return;
   parts.push({x:sx(b.x+.5,b.y+.5),y:sy(b.x+.5,b.y+.5)-14,vx:(Math.random()-.5)*50,vy:-30-Math.random()*30,
     g:120,r:1.6,gr:-.4,life:.5,max:.5,col:'255,190,90'});
 }
 function puff(x,y,base){
+  if(fastSim) return;
   for(let i=0;i<7;i++) parts.push({x:sx(x+.5,y+.5),y:sy(x+.5,y+.5)-base,vx:(Math.random()-.5)*60,vy:-10-Math.random()*20,
     g:40,r:2+Math.random()*3,gr:5,life:.5,max:.5,col:'150,160,170',smoke:1});
 }
@@ -1481,7 +1514,7 @@ el('imp').onchange=e=>{
 };
 
 /* ═══════════════════ LOOP ═══════════════════ */
-let last=performance.now(),acc=0,sacc=0,bacc=0;
+let last=performance.now(),acc=0,sacc=0,bacc=0,started=false;
 function loop(now){
   const dt=Math.min(.05,(now-last)/1000); last=now; T+=dt;
   bacc+=dt; if(bacc>.1){ bacc=0; sfxB=Math.min(4,sfxB+1); }
@@ -1490,12 +1523,51 @@ function loop(now){
   sacc+=dt; if(sacc>15){ sacc=0; save(); }
   requestAnimationFrame(loop);
 }
+
+/* ─── aba em segundo plano ───
+   requestAnimationFrame congela quando a aba perde o foco, então um timer
+   assume e continua simulando em passos de 0,25 s — sem desenhar, sem som
+   e sem partículas. Cobre também o que o navegador estrangular no caminho. */
+const BG_STEP=.25;
+let bgRem=0,bgSave=0;
+function simBG(sec){
+  fastSim=true;
+  const n=Math.min(Math.floor(sec/BG_STEP),720);      // teto de 3 min por chamada
+  for(let i=0;i<n;i++){ update(BG_STEP); T+=BG_STEP; }
+  fastSim=false;
+  return n*BG_STEP;
+}
+setInterval(()=>{
+  if(!started||!document.hidden) return;
+  const now=performance.now();
+  const sec=(now-last)/1000+bgRem; last=now;
+  bgRem=Math.min(BG_STEP,Math.max(0,sec-simBG(sec)));  // guarda a sobra do passo
+  bgSave+=sec; if(bgSave>20){ bgSave=0; save(); }
+},500);
+addEventListener('visibilitychange',()=>{
+  const now=performance.now();
+  if(document.hidden){ last=now; save(); return; }
+  const sec=(now-last)/1000; last=now;
+  if(started&&sec>1) simBG(Math.min(sec,180));
+  if(started) hud();
+});
+
+/* ═══════════════════ INÍCIO ═══════════════════ */
+const isMobile = /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry|Opera Mini|IEMobile/i.test(navigator.userAgent)
+  || (matchMedia('(pointer:coarse)').matches && Math.min(screen.width,screen.height)<820);
+
 (async function(){
+  if(isMobile){
+    el('manual').style.display='none';
+    el('block').style.display='grid';
+    return;
+  }
   resize();
   if(!await load()) genWorld(null,1);
   buildGround(); drawTools(); drawShip(); drawTechs(); drawColonies();
   cam.x=VW/2; cam.y=VH/2-(W+H)*TH/4+20; cam.z=.75;
   el('go').onclick=()=>{ el('manual').style.display='none'; initAudio(); };
+  started=true; last=performance.now();
   requestAnimationFrame(loop);
 })();
 </script>
