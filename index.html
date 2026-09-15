@@ -122,6 +122,29 @@
   #tx button{font:inherit;font-size:14px;padding:8px 16px;border-radius:2px;cursor:pointer;border:1px solid var(--line);background:#141b23;color:#c6d3df}
   #tx button.p{background:var(--amber);color:#16202a;border:0;font-weight:700}
 
+  #guide{position:fixed;inset:0;background:rgba(6,9,13,.9);display:none;place-items:center;z-index:13;padding:20px}
+  #guide .card{width:min(760px,94vw);max-height:86vh;display:flex;flex-direction:column;padding:20px 22px}
+  .ghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .ghead h2{font-size:17px;letter-spacing:.08em}
+  .ghead button{font:inherit;font-size:16px;background:none;border:0;color:var(--mute);cursor:pointer;padding:2px 6px}
+  .ghead button:hover{color:var(--ink)}
+  .gtabs{display:flex;gap:8px;margin-bottom:12px;border-bottom:1px solid #263039;padding-bottom:10px}
+  .gtab{font:inherit;font-size:13px;padding:6px 14px;background:#141b23;border:1px solid #26313c;color:#b6c4d1;cursor:pointer;border-radius:2px}
+  .gtab:hover{border-color:#4a5d6e}
+  .gtab.on{border-color:var(--amber);color:var(--ink);background:#241c11}
+  #gbody{overflow-y:auto;flex:1;padding-right:6px;scrollbar-width:thin}
+  #gbody::-webkit-scrollbar{width:6px}#gbody::-webkit-scrollbar-thumb{background:#2e3a46}
+  .gsec{margin-bottom:13px;padding-bottom:11px;border-bottom:1px dashed #232c35}
+  .gsec:last-child{border:0}
+  .ghead2{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .gsw{width:12px;height:12px;transform:rotate(45deg);flex:none;border:1px solid rgba(0,0,0,.5)}
+  .gnm{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .gpr{font-size:12px;color:var(--credit);margin-left:auto}
+  .gdesc{font-size:12.5px;color:var(--mute);line-height:1.5;margin:2px 0 6px}
+  .grow{font-size:13px;color:#c6d3df;padding:2px 0;line-height:1.5}
+  .grow b{color:var(--ink);font-weight:600}
+  .glock{font-size:11px;color:var(--tech)}
+
   #block{position:fixed;inset:0;background:#0a0e13;display:none;place-items:center;z-index:20;padding:24px}
   #block .card{max-width:440px;padding:30px 30px 26px;text-align:center}
   #block .ic{width:76px;height:76px;margin:0 auto 16px;position:relative}
@@ -155,6 +178,7 @@
   <button class="iconbtn" id="impBtn" data-i18n="ui.import">⭱ importar arquivo</button>
   <button class="iconbtn" id="txOut" data-i18n="ui.copy">⎘ copiar</button>
   <button class="iconbtn" id="txIn" data-i18n="ui.paste">⎗ colar save</button>
+  <button class="iconbtn" id="guideBtn" data-i18n="ui.guide">📖 guia</button>
   <button class="iconbtn" id="tutBtn" data-i18n="ui.tutorial">❔ tutorial</button>
   <button class="iconbtn" id="reset" data-i18n="ui.new">nova fábrica</button>
   <input type="file" id="imp" accept=".json,application/json" style="display:none">
@@ -172,6 +196,20 @@
 <div id="hint" class="panel" data-i18nh="hint"><kbd>S</kbd> cursor · <kbd>arrastar</kbd> esteira · <kbd>R</kbd> girar · <kbd>dir.</kbd> demolir · <kbd>espaço</kbd> câmera · <kbd>scroll</kbd> zoom · <kbd>N</kbd> mudo</div>
 
 <div id="tut" class="panel"></div>
+
+<div id="guide">
+  <div class="card panel">
+    <div class="ghead">
+      <h2 data-i18n="gd.title">GUIA DE PRODUÇÃO</h2>
+      <button id="guideClose">✕</button>
+    </div>
+    <div class="gtabs">
+      <button class="gtab on" data-tab="item" data-i18n="gd.byItem">Por item</button>
+      <button class="gtab" data-tab="mach" data-i18n="gd.byMach">Por máquina</button>
+    </div>
+    <div id="gbody"></div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <div id="block"><div class="card panel">
@@ -237,7 +275,7 @@ pt:{
  'ui.credits':'CRÉDITOS','ui.revenue':'RECEITA','ui.research':'PESQUISA','ui.power':'ENERGIA','ui.seed':'SEMENTE',
  'ui.selection':'SELEÇÃO','ui.shipment':'REMESSA','ui.colonies':'COLÔNIAS','ui.locked':'travada',
  'ui.sound':'♪ som','ui.mute':'✕ mudo','ui.export':'⭳ exportar','ui.saved':'✓ salvo','ui.import':'⭱ importar arquivo',
- 'ui.copy':'⎘ copiar','ui.paste':'⎗ colar save','ui.new':'nova fábrica','ui.tutorial':'❔ tutorial','ui.free':'grátis','ui.lvl':'nv',
+ 'ui.copy':'⎘ copiar','ui.paste':'⎗ colar save','ui.new':'nova fábrica','ui.tutorial':'❔ tutorial','ui.guide':'📖 guia','ui.free':'grátis','ui.lvl':'nv',
  'ui.epoch':'ÉPOCA','ui.era':'ERA','ui.min':'/min','ui.seedCopy':'clique para copiar',
  'grp.FERRAMENTA':'FERRAMENTA','grp.EXTRAÇÃO':'EXTRAÇÃO','grp.LOGÍSTICA':'LOGÍSTICA','grp.PRODUÇÃO':'PRODUÇÃO',
  'grp.ENERGIA':'ENERGIA','grp.DESTINO':'DESTINO',
@@ -259,6 +297,11 @@ pt:{
  'tut.mkt.body':'Leve o que a Fundição produzir até um <b>Mercado</b> (tecla V). Ele vende na hora tudo que chega — a forma mais rápida de virar produção em créditos.',
  'tut.ship.body':'O <b>Terminal de Remessa</b> (tecla X) é de graça. Construa um e entregue por esteira os itens pedidos no painel REMESSA, à direita — fechar a remessa avança a era.',
  'tut.end.body':'Isso cobre o essencial: extrair, transportar, produzir, vender e enviar. Dali em diante é ligar mais linhas, pesquisar melhorias no Centro de Pesquisa e crescer. Bom jogo!',
+ 'gd.title':'GUIA DE PRODUÇÃO','gd.byItem':'Por item','gd.byMach':'Por máquina','gd.era':'era {n}','gd.req':'requer: {n}',
+ 'gd.oreExtrator':'Extraia com o Extrator sobre um depósito deste minério.',
+ 'gd.oreBomba':'Extraia com a Bomba de poço sobre um poço de petróleo.',
+ 'gd.oreMk2':'Minério duro — exige o Extrator Mk2 sobre o depósito.',
+ 'gd.none':'Não é produzido por nenhuma máquina.',
  'blk.sub':'DISPONÍVEL APENAS NO COMPUTADOR',
  'blk.p':'Este jogo foi feito para mouse e teclado. Numa tela de toque não há como arrastar esteiras, girar construções ou demolir, então preferi bloquear a entrar num estado quebrado.',
  'blk.l1':'<b>arrastar</b> desenha a linha de esteira inteira','blk.l2':'<b>botão direito</b> demole',
@@ -337,7 +380,7 @@ en:{
  'ui.credits':'CREDITS','ui.revenue':'REVENUE','ui.research':'RESEARCH','ui.power':'POWER','ui.seed':'SEED',
  'ui.selection':'SELECTION','ui.shipment':'SHIPMENT','ui.colonies':'COLONIES','ui.locked':'locked',
  'ui.sound':'♪ sound','ui.mute':'✕ muted','ui.export':'⭳ export','ui.saved':'✓ saved','ui.import':'⭱ import file',
- 'ui.copy':'⎘ copy','ui.paste':'⎗ paste save','ui.new':'new factory','ui.tutorial':'❔ tutorial','ui.free':'free','ui.lvl':'lv',
+ 'ui.copy':'⎘ copy','ui.paste':'⎗ paste save','ui.new':'new factory','ui.tutorial':'❔ tutorial','ui.guide':'📖 guide','ui.free':'free','ui.lvl':'lv',
  'ui.epoch':'EPOCH','ui.era':'ERA','ui.min':'/min','ui.seedCopy':'click to copy',
  'grp.FERRAMENTA':'TOOL','grp.EXTRAÇÃO':'MINING','grp.LOGÍSTICA':'LOGISTICS','grp.PRODUÇÃO':'PRODUCTION',
  'grp.ENERGIA':'POWER','grp.DESTINO':'DESTINATION',
@@ -359,6 +402,11 @@ en:{
  'tut.mkt.body':'Carry whatever the Smelter makes to a <b>Market</b> (key V). It sells everything that arrives on the spot — the quickest way to turn output into credits.',
  'tut.ship.body':'The <b>Shipping Terminal</b> (key X) is free. Build one and belt over the items requested in the SHIPMENT panel on the right — filling the shipment advances the era.',
  'tut.end.body':'That covers the basics: mine, move, produce, sell and ship. From here it\'s about wiring more lines, researching upgrades at the Research Lab, and growing. Have fun!',
+ 'gd.title':'PRODUCTION GUIDE','gd.byItem':'By item','gd.byMach':'By machine','gd.era':'era {n}','gd.req':'requires: {n}',
+ 'gd.oreExtrator':'Mine it with the Miner on a deposit of this ore.',
+ 'gd.oreBomba':'Pump it with the Oil Pump on an oil well.',
+ 'gd.oreMk2':'Hard ore — needs the Miner Mk2 on the deposit.',
+ 'gd.none':'Not produced by any machine.',
  'blk.sub':'AVAILABLE ON DESKTOP ONLY',
  'blk.p':'This game was built for mouse and keyboard. On a touch screen there is no way to drag belts, rotate buildings or demolish, so I would rather block it than let you into a broken state.',
  'blk.l1':'<b>drag</b> draws a whole belt line','blk.l2':'<b>right click</b> demolishes',
@@ -437,7 +485,7 @@ ja:{
  'ui.credits':'クレジット','ui.revenue':'収入','ui.research':'研究','ui.power':'電力','ui.seed':'シード',
  'ui.selection':'選択','ui.shipment':'出荷','ui.colonies':'植民地','ui.locked':'固定中',
  'ui.sound':'♪ 音','ui.mute':'✕ 消音','ui.export':'⭳ 書き出し','ui.saved':'✓ 保存','ui.import':'⭱ ファイル読込',
- 'ui.copy':'⎘ コピー','ui.paste':'⎗ セーブ貼付','ui.new':'新しい工場','ui.tutorial':'❔ チュートリアル','ui.free':'無料','ui.lvl':'Lv',
+ 'ui.copy':'⎘ コピー','ui.paste':'⎗ セーブ貼付','ui.new':'新しい工場','ui.tutorial':'❔ チュートリアル','ui.guide':'📖 ガイド','ui.free':'無料','ui.lvl':'Lv',
  'ui.epoch':'時代','ui.era':'期','ui.min':'/分','ui.seedCopy':'クリックでコピー',
  'grp.FERRAMENTA':'ツール','grp.EXTRAÇÃO':'採掘','grp.LOGÍSTICA':'物流','grp.PRODUÇÃO':'生産',
  'grp.ENERGIA':'電力','grp.DESTINO':'出荷先',
@@ -459,6 +507,11 @@ ja:{
  'tut.mkt.body':'製錬炉が作った製品を<b>市場</b>（Vキー）まで運びましょう。届いたものをその場で売却します — 生産をすぐ資金に変える最短ルートです。',
  'tut.ship.body':'<b>出荷ターミナル</b>（Xキー）は無料です。建設して、右側の出荷パネルが求めるアイテムをベルトで届けましょう。出荷を満たすと時代が進みます。',
  'tut.end.body':'これで基本は完了です：採掘、輸送、生産、販売、出荷。この先はラインを増やし、研究所でアップグレードを進めて拡大していきましょう。楽しんで！',
+ 'gd.title':'生産ガイド','gd.byItem':'アイテム別','gd.byMach':'機械別','gd.era':'第{n}期','gd.req':'必要な研究: {n}',
+ 'gd.oreExtrator':'この鉱床の上に採掘機を置いて採掘してください。',
+ 'gd.oreBomba':'油井の上に油井ポンプを置いて汲み上げてください。',
+ 'gd.oreMk2':'硬い鉱石 — 鉱床には採掘機 Mk2が必要です。',
+ 'gd.none':'どの機械でも生産されません。',
  'blk.sub':'PC専用',
  'blk.p':'このゲームはマウスとキーボード向けに作られています。タッチ画面ではベルトのドラッグ、建物の回転、解体ができないため、壊れた状態で遊ばせるよりブロックすることにしました。',
  'blk.l1':'<b>ドラッグ</b>でベルトを一気に敷設','blk.l2':'<b>右クリック</b>で解体',
@@ -537,7 +590,7 @@ ru:{
  'ui.credits':'КРЕДИТЫ','ui.revenue':'ДОХОД','ui.research':'ИССЛЕДОВАНИЯ','ui.power':'ЭНЕРГИЯ','ui.seed':'СИД',
  'ui.selection':'ВЫБОР','ui.shipment':'ОТГРУЗКА','ui.colonies':'КОЛОНИИ','ui.locked':'закреплено',
  'ui.sound':'♪ звук','ui.mute':'✕ без звука','ui.export':'⭳ экспорт','ui.saved':'✓ сохранено','ui.import':'⭱ импорт файла',
- 'ui.copy':'⎘ копировать','ui.paste':'⎗ вставить сейв','ui.new':'новая фабрика','ui.tutorial':'❔ обучение','ui.free':'бесплатно','ui.lvl':'ур',
+ 'ui.copy':'⎘ копировать','ui.paste':'⎗ вставить сейв','ui.new':'новая фабрика','ui.tutorial':'❔ обучение','ui.guide':'📖 гид','ui.free':'бесплатно','ui.lvl':'ур',
  'ui.epoch':'ЭПОХА','ui.era':'ЭРА','ui.min':'/мин','ui.seedCopy':'нажмите, чтобы скопировать',
  'grp.FERRAMENTA':'ИНСТРУМЕНТ','grp.EXTRAÇÃO':'ДОБЫЧА','grp.LOGÍSTICA':'ЛОГИСТИКА','grp.PRODUÇÃO':'ПРОИЗВОДСТВО',
  'grp.ENERGIA':'ЭНЕРГИЯ','grp.DESTINO':'НАЗНАЧЕНИЕ',
@@ -559,6 +612,11 @@ ru:{
  'tut.mkt.body':'Отвезите то, что производит Плавильня, к <b>Рынку</b> (клавиша V). Он мгновенно продаёт всё, что приходит — самый быстрый способ превратить продукцию в кредиты.',
  'tut.ship.body':'<b>Отгрузочный терминал</b> (клавиша X) бесплатный. Постройте его и подвезите конвейером предметы, которые запрашивает панель ОТГРУЗКИ справа — закрыв отгрузку, вы продвинете эру.',
  'tut.end.body':'Это покрывает основы: добыча, перевозка, производство, продажа и отгрузка. Дальше — стройте больше линий, исследуйте улучшения в Лаборатории и расширяйтесь. Удачной игры!',
+ 'gd.title':'ГИД ПО ПРОИЗВОДСТВУ','gd.byItem':'По предмету','gd.byMach':'По машине','gd.era':'эра {n}','gd.req':'нужно: {n}',
+ 'gd.oreExtrator':'Добывайте Добытчиком на месторождении этой руды.',
+ 'gd.oreBomba':'Качайте Нефтяным насосом на нефтяной скважине.',
+ 'gd.oreMk2':'Твёрдая руда — нужен Добытчик Mk2 на месторождении.',
+ 'gd.none':'Не производится ни одной машиной.',
  'blk.sub':'ТОЛЬКО ДЛЯ КОМПЬЮТЕРА',
  'blk.p':'Игра сделана под мышь и клавиатуру. На сенсорном экране нельзя протянуть ленту, повернуть здание или снести его, поэтому лучше заблокировать вход, чем пустить в сломанное состояние.',
  'blk.l1':'<b>перетаскивание</b> строит всю линию ленты','blk.l2':'<b>правая кнопка</b> сносит',
@@ -1691,6 +1749,68 @@ function tutOnPlace(type){
 }
 el('tutBtn').onclick=tutStart;
 
+/* ═══════════════════ GUIA DE PRODUÇÃO ═══════════════════ */
+let guideTab='item';
+function guideOreText(key){
+  if(key==='petroleo') return T_('gd.oreBomba');
+  if(key==='titanio') return T_('gd.oreMk2');
+  return T_('gd.oreExtrator');
+}
+function guideRecipeTag(r){
+  let s='';
+  if(r.era>1) s+=` <span class="glock">${T_('gd.era',{n:RM[r.era]})}</span>`;
+  if(r.req) s+=` <span class="glock">${T_('gd.req',{n:tname(r.req)})}</span>`;
+  return s;
+}
+function guideItemsHTML(){
+  let h='';
+  for(const key in ITEMS){
+    const it=ITEMS[key];
+    h+=`<div class="gsec"><div class="ghead2"><span class="gsw" style="background:${it.c||'#8799aa'}"></span>
+      <span class="gnm">${iname(key)}</span>${it.price?`<span class="gpr num">$${it.price}</span>`:''}</div>`;
+    if(it.ore){
+      h+=`<div class="gdesc">${guideOreText(key)}</div>`;
+    } else {
+      const recs=RECIPES.filter(r=>r.out.some(o=>o.i===key));
+      if(!recs.length){ h+=`<div class="gdesc">${T_('gd.none')}</div>`; }
+      else for(const r of recs){
+        const ins=Object.entries(r.in).map(([k,q])=>q+'× '+iname(k)).join(' + ');
+        const oq=r.out.find(o=>o.i===key).q;
+        h+=`<div class="grow"><b>${mname(r.m)}</b>: ${ins} → ${oq}× ${iname(key)} · ${r.t}s${guideRecipeTag(r)}</div>`;
+      }
+    }
+    h+='</div>';
+  }
+  return h;
+}
+function guideMachHTML(){
+  let h='';
+  for(const k of ORDER){
+    if(k==='cursor') continue;
+    const d=B[k];
+    h+=`<div class="gsec"><div class="ghead2"><span class="gsw" style="background:${d.top}"></span>
+      <span class="gnm">${mname(k)}</span>${d.cost?`<span class="gpr num">$${nfmt(d.cost)}</span>`:''}</div>
+      <div class="gdesc">${mdesc(k)}</div>`;
+    const recs=RECIPES.filter(r=>r.m===k);
+    for(const r of recs){
+      const ins=Object.entries(r.in).map(([kk,q])=>q+'× '+iname(kk)).join(' + ');
+      const outs=r.out.map(o=>o.q+'× '+iname(o.i)+(o.port?' ('+T_('ins.outR')+')':'')).join(' + ');
+      h+=`<div class="grow">${ins} → ${outs} · ${r.t}s${guideRecipeTag(r)}</div>`;
+    }
+    h+='</div>';
+  }
+  return h;
+}
+function guideRender(){ el('gbody').innerHTML = guideTab==='item'?guideItemsHTML():guideMachHTML(); }
+let guideOn=false;
+function guideOpen(){ guideOn=true; el('guide').style.display='grid'; guideRender(); }
+el('guideBtn').onclick=guideOpen;
+el('guideClose').onclick=()=>{ guideOn=false; el('guide').style.display='none'; };
+document.querySelectorAll('#guide .gtab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#guide .gtab').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); guideTab=b.dataset.tab; guideRender();
+});
+
 /* ═══════════════════ HUD ═══════════════════ */
 function drawTools(){
   let html='',g='';
@@ -1826,6 +1946,8 @@ function setLang(l){
   try{ localStorage.setItem('f7lang',l); }catch(e){}
   applyStatic();
   if(tiles.length){ drawTools(); drawShip(); drawTechs(); drawColonies(); inspect(); hud(); }
+  if(tutOn) tutRender();
+  if(guideOn) guideRender();
 }
 function initLang(){
   let l=null;
