@@ -9,7 +9,10 @@
         --amber:#f2a03d;--volt:#5ad1e6;--credit:#7fd18a;--tech:#c9a0ff;--bad:#e0604f}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);user-select:none;
-    font-family:"Avenir Next Condensed","Roboto Condensed","Arial Narrow",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+    font-family:"Avenir Next Condensed","Roboto Condensed","Arial Narrow",Inter,system-ui,
+      "Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP","Noto Sans",sans-serif;-webkit-font-smoothing:antialiased}
+  html[lang="ja"] body,html[lang="ru"] body{font-family:system-ui,"Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP","Segoe UI",Roboto,sans-serif}
+  #langSel{font:inherit;font-size:13px;padding:5px 8px;background:#141b23;border:1px solid var(--line);color:#b6c4d1;border-radius:2px;cursor:pointer}
   canvas{position:fixed;inset:0;display:block;touch-action:none;cursor:crosshair}
   .num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
   .panel{background:linear-gradient(180deg,rgba(32,42,53,.95),rgba(16,22,29,.96));border:1px solid var(--line);
@@ -129,44 +132,45 @@
 
 <div id="top" class="panel">
   <div class="logo">FUNDIÇÃO 7<br><i id="eraTag">ÉPOCA I · ERA I · ASSENTAMENTO</i></div>
-  <div class="stat"><span>CRÉDITOS</span><b class="money num" id="money">$0</b></div>
-  <div class="stat"><span>RECEITA</span><b class="num" id="rate" style="font-size:14px;color:#b6c4d1">$0 /min</b></div>
-  <div class="stat"><span>PESQUISA</span><b class="num" id="ppv">0 PP</b></div>
-  <div class="stat"><span>ENERGIA</span><div class="row"><div id="powerbar"><i id="powerfill"></i></div><b id="powertxt" class="num" style="color:var(--volt);font-size:13px">0/0</b></div></div>
-  <div class="stat"><span>SEMENTE</span><b class="num" id="seedTag" style="font-size:13px;color:#b6c4d1;cursor:pointer" title="clique para copiar">—</b></div>
+  <div class="stat"><span data-i18n="ui.credits">CRÉDITOS</span><b class="money num" id="money">$0</b></div>
+  <div class="stat"><span data-i18n="ui.revenue">RECEITA</span><b class="num" id="rate" style="font-size:14px;color:#b6c4d1">$0 /min</b></div>
+  <div class="stat"><span data-i18n="ui.research">PESQUISA</span><b class="num" id="ppv">0 PP</b></div>
+  <div class="stat"><span data-i18n="ui.power">ENERGIA</span><div class="row"><div id="powerbar"><i id="powerfill"></i></div><b id="powertxt" class="num" style="color:var(--volt);font-size:13px">0/0</b></div></div>
+  <div class="stat"><span data-i18n="ui.seed">SEMENTE</span><b class="num" id="seedTag" style="font-size:13px;color:#b6c4d1;cursor:pointer" data-i18nt="ui.seedCopy" title="clique para copiar">—</b></div>
   <div class="spacer"></div>
+  <select id="langSel"></select>
   <button class="iconbtn" id="sound">♪ som</button>
-  <button class="iconbtn" id="exp">⭳ exportar</button>
-  <button class="iconbtn" id="impBtn">⭱ importar arquivo</button>
-  <button class="iconbtn" id="txOut" title="copiar o save como texto">⎘ copiar</button>
-  <button class="iconbtn" id="txIn" title="colar um save em texto">⎗ colar save</button>
-  <button class="iconbtn" id="reset">nova fábrica</button>
+  <button class="iconbtn" id="exp" data-i18n="ui.export">⭳ exportar</button>
+  <button class="iconbtn" id="impBtn" data-i18n="ui.import">⭱ importar arquivo</button>
+  <button class="iconbtn" id="txOut" data-i18n="ui.copy">⎘ copiar</button>
+  <button class="iconbtn" id="txIn" data-i18n="ui.paste">⎗ colar save</button>
+  <button class="iconbtn" id="reset" data-i18n="ui.new">nova fábrica</button>
   <input type="file" id="imp" accept=".json,application/json" style="display:none">
 </div>
 
 <div id="build" class="panel"><div id="tools"></div></div>
 
 <div id="side">
-  <div class="panel"><h3><span>SELEÇÃO</span><em id="selTag"></em></h3><div id="inspectBody"></div></div>
-  <div class="panel"><h3><span>REMESSA</span><em id="shipTag"></em></h3><div id="ship"></div></div>
-  <div class="panel" id="colPanel" style="display:none"><h3><span>COLÔNIAS</span><em id="colTag"></em></h3><div id="cols"></div></div>
-  <div class="panel"><h3><span>PESQUISA</span><em id="ppTag"></em></h3><div id="techs"></div></div>
+  <div class="panel"><h3><span data-i18n="ui.selection">SELEÇÃO</span><em id="selTag"></em></h3><div id="inspectBody"></div></div>
+  <div class="panel"><h3><span data-i18n="ui.shipment">REMESSA</span><em id="shipTag"></em></h3><div id="ship"></div></div>
+  <div class="panel" id="colPanel" style="display:none"><h3><span data-i18n="ui.colonies">COLÔNIAS</span><em id="colTag"></em></h3><div id="cols"></div></div>
+  <div class="panel"><h3><span data-i18n="ui.research">PESQUISA</span><em id="ppTag"></em></h3><div id="techs"></div></div>
 </div>
 
-<div id="hint" class="panel"><kbd>S</kbd> cursor · <kbd>arrastar</kbd> esteira · <kbd>R</kbd> girar · <kbd>dir.</kbd> demolir · <kbd>espaço</kbd> câmera · <kbd>scroll</kbd> zoom · <kbd>N</kbd> mudo</div>
+<div id="hint" class="panel" data-i18nh="hint"><kbd>S</kbd> cursor · <kbd>arrastar</kbd> esteira · <kbd>R</kbd> girar · <kbd>dir.</kbd> demolir · <kbd>espaço</kbd> câmera · <kbd>scroll</kbd> zoom · <kbd>N</kbd> mudo</div>
 <div id="toast"></div>
 
 <div id="block"><div class="card panel">
   <div class="ic"><i></i><i></i><i></i></div>
   <h1>FUNDIÇÃO <em>7</em></h1>
-  <div class="sub">DISPONÍVEL APENAS NO COMPUTADOR</div>
-  <p>Este jogo foi feito para mouse e teclado. Numa tela de toque não há como arrastar esteiras, girar construções ou demolir, então preferi bloquear a entrar num estado quebrado.</p>
+  <div class="sub" data-i18n="blk.sub">PC</div>
+  <p data-i18n="blk.p">.</p>
   <ul>
-    <li><b>arrastar</b> desenha a linha de esteira inteira</li>
-    <li><b>botão direito</b> demole</li>
-    <li><b>R</b> gira · <b>espaço</b> move a câmera · <b>scroll</b> dá zoom</li>
+    <li data-i18nh="blk.l1"></li>
+    <li data-i18nh="blk.l2"></li>
+    <li data-i18nh="blk.l3"></li>
   </ul>
-  <p style="margin-top:16px;color:var(--mute);font-size:13px">Abra em um PC ou notebook para jogar.</p>
+  <p style="margin-top:16px;color:var(--mute);font-size:13px" data-i18n="blk.end">.</p>
 </div></div>
 
 <div id="tx"><div class="card panel">
@@ -174,9 +178,9 @@
   <p id="txHelp"></p>
   <textarea id="txa" spellcheck="false"></textarea>
   <div class="bar">
-    <button class="p" id="txCopy">copiar tudo</button>
-    <button id="txLoad" style="display:none">carregar este save</button>
-    <button id="txClose">fechar</button>
+    <button class="p" id="txCopy" data-i18n="tx.copy">copiar tudo</button>
+    <button id="txLoad" style="display:none" data-i18n="tx.load">carregar este save</button>
+    <button id="txClose" data-i18n="tx.close">fechar</button>
   </div>
 </div></div>
 
@@ -185,16 +189,16 @@
 <div id="manual">
   <div class="card panel">
     <h1>FUNDIÇÃO <em>7</em></h1>
-    <div class="sub">ÉPOCAS I e II · PLANALTO E FRONTEIRA</div>
-    <p>A concessão é liberada por etapas, e quem decide o ritmo é a sua linha de produção.</p>
+    <div class="sub" data-i18n="man.sub">ÉPOCAS I e II</div>
+    <p data-i18n="man.p">.</p>
     <ol>
-      <li>O <b>Terminal de Remessa</b> pede lotes. Entregue o que ele pede e a era avança: o contorno da concessão se abre, liberando terreno e minérios novos.</li>
-      <li>O <b>Centro de Pesquisa</b> consome itens e devolve Pontos de Pesquisa. Toda melhoria e toda receita alternativa sai daí — dinheiro agora só constrói.</li>
-      <li>A <b>Refinaria</b> tem duas saídas: plástico sai pela frente, betume sai pela direita. Se você não escoar o betume, ela entope e para.</li>
-      <li>Clique com o <b>cursor</b> (tecla S) em qualquer máquina para travar qual receita ela produz.</li>
-      <li>Fechada a remessa da Era III, você pode <b>partir</b>: o planalto vira colônia e segue mandando minério por um terminal no mapa novo, onde começa a era do titânio.</li>
+      <li data-i18nh="man.l1"></li>
+      <li data-i18nh="man.l2"></li>
+      <li data-i18nh="man.l3"></li>
+      <li data-i18nh="man.l4"></li>
+      <li data-i18nh="man.l5"></li>
     </ol>
-    <button id="go">Assumir a concessão</button>
+    <button id="go" data-i18n="man.go">Assumir a concessão</button>
   </div>
 </div>
 
@@ -209,6 +213,394 @@ const EP_NM=['','CONCESSÃO DO PLANALTO','FRONTEIRA DE TITÂNIO'];
 const RM=['','I','II','III','IV','V','VI'];
 const MAX_ERA=4;                          // conteúdo implementado até aqui
 const COLONY_SHARE=0.35;                  // fatia da extração que a colônia continua mandando
+
+/* ═══════════════════ IDIOMAS ═══════════════════ */
+const LANGS={pt:'Português',en:'English',ja:'日本語',ru:'Русский'};
+const LOC={pt:'pt-BR',en:'en-US',ja:'ja-JP',ru:'ru-RU'};
+let lang='pt';
+const STR={
+pt:{
+ 'ui.credits':'CRÉDITOS','ui.revenue':'RECEITA','ui.research':'PESQUISA','ui.power':'ENERGIA','ui.seed':'SEMENTE',
+ 'ui.selection':'SELEÇÃO','ui.shipment':'REMESSA','ui.colonies':'COLÔNIAS','ui.locked':'travada',
+ 'ui.sound':'♪ som','ui.mute':'✕ mudo','ui.export':'⭳ exportar','ui.saved':'✓ salvo','ui.import':'⭱ importar arquivo',
+ 'ui.copy':'⎘ copiar','ui.paste':'⎗ colar save','ui.new':'nova fábrica','ui.free':'grátis','ui.lvl':'nv',
+ 'ui.epoch':'ÉPOCA','ui.era':'ERA','ui.min':'/min','ui.seedCopy':'clique para copiar',
+ 'grp.FERRAMENTA':'FERRAMENTA','grp.EXTRAÇÃO':'EXTRAÇÃO','grp.LOGÍSTICA':'LOGÍSTICA','grp.PRODUÇÃO':'PRODUÇÃO',
+ 'grp.ENERGIA':'ENERGIA','grp.DESTINO':'DESTINO',
+ 'era.1':'ASSENTAMENTO','era.2':'INDUSTRIAL','era.3':'QUÍMICA','era.4':'LIGAS LEVES',
+ 'ep.1':'CONCESSÃO DO PLANALTO','ep.2':'FRONTEIRA DE TITÂNIO',
+ 'hint':'<kbd>S</kbd> cursor · <kbd>arrastar</kbd> esteira · <kbd>R</kbd> girar · <kbd>dir.</kbd> demolir · <kbd>espaço</kbd> câmera · <kbd>scroll</kbd> zoom · <kbd>N</kbd> mudo',
+ 'man.sub':'ÉPOCAS I e II · PLANALTO E FRONTEIRA',
+ 'man.p':'A concessão é liberada por etapas, e quem decide o ritmo é a sua linha de produção.',
+ 'man.l1':'O <b>Terminal de Remessa</b> pede lotes. Entregue o que ele pede e a era avança: o contorno da concessão se abre, liberando terreno e minérios novos.',
+ 'man.l2':'O <b>Centro de Pesquisa</b> consome itens e devolve Pontos de Pesquisa. Toda melhoria e toda receita alternativa sai daí — dinheiro agora só constrói.',
+ 'man.l3':'A <b>Refinaria</b> tem duas saídas: plástico sai pela frente, betume sai pela direita. Se você não escoar o betume, ela entope e para.',
+ 'man.l4':'Clique com o <b>cursor</b> (tecla S) em qualquer máquina para travar qual receita ela produz.',
+ 'man.l5':'Fechada a remessa da Era III, você pode <b>partir</b>: o planalto vira colônia e segue mandando minério por um terminal no mapa novo, onde começa a era do titânio.',
+ 'man.go':'Assumir a concessão',
+ 'blk.sub':'DISPONÍVEL APENAS NO COMPUTADOR',
+ 'blk.p':'Este jogo foi feito para mouse e teclado. Numa tela de toque não há como arrastar esteiras, girar construções ou demolir, então preferi bloquear a entrar num estado quebrado.',
+ 'blk.l1':'<b>arrastar</b> desenha a linha de esteira inteira','blk.l2':'<b>botão direito</b> demole',
+ 'blk.l3':'<b>R</b> gira · <b>espaço</b> move a câmera · <b>scroll</b> dá zoom',
+ 'blk.end':'Abra em um PC ou notebook para jogar.',
+ 'tx.out':'Copiar save','tx.outHelp':'O preview bloqueia download de arquivo. Copie este texto e cole na outra versão pelo botão "colar save".',
+ 'tx.in':'Colar save','tx.inHelp':'Cole aqui o texto copiado da versão anterior e carregue.',
+ 'tx.copy':'copiar tudo','tx.load':'carregar este save','tx.close':'fechar',
+ 'ins.use':'Consumo','ins.dep':'Depósito','ins.mining':'Extraindo','ins.burning':'Queimando','ins.making':'Produzindo',
+ 'ins.idle':'parado','ins.outF':'saída frente','ins.outR':'saída direita','ins.recipe':'Receita','ins.auto':'automática',
+ 'ins.outside':'Fora da concessão liberada.','ins.coal':'carvão · 30 MW','ins.bit':'betume · 60 MW','ins.deck':' · deck',
+ 'shp.deliver':'Entregue no Terminal para abrir a próxima era.','shp.none':'Sem remessa definida para esta era.',
+ 'shp.noTerminal':'Nenhum Terminal construído (tecla X, de graça).',
+ 'shp.epochDone':'Época concluída. Partindo, este planalto vira colônia e continua mandando:',
+ 'shp.nothing':'nada — sem extrator ativo','shp.jump':'PARTIR PARA A PRÓXIMA ÉPOCA',
+ 'shp.wip':'Era V em desenvolvimento. A fábrica continua rodando.',
+ 'tech.empty':'Construa um Centro de Pesquisa para gerar PP.',
+ 'col.one':'ativa','col.many':'ativas','col.line':'Colônia {n} · semente {s}','tool.era':'era {n}',
+ 'msg.outside':'Fora da concessão liberada','msg.oneTerminal':'Só um Terminal por concessão',
+ 'msg.noDeck':'Não dá para erguer deck sobre máquina','msg.deckBelts':'No deck só entram esteiras e divisores',
+ 'msg.titanium':'Titânio é duro demais — exige Extrator Mk2','msg.oilOnly':'A bomba só entra em poço de petróleo',
+ 'msg.solidOnly':'Extrator só sobre depósito sólido','msg.noCredits':'Créditos insuficientes',
+ 'msg.noDemolish':'O Terminal da Colônia não pode ser demolido','msg.shipDone':'Remessa completa — a concessão pode partir',
+ 'msg.expanded':'Concessão expandida — novo terreno e minérios liberados','msg.researched':'{n} pesquisado',
+ 'msg.level':'{n} nível {l}','msg.noExtractor':'Nenhum extrator rodando — a colônia não renderia nada',
+ 'msg.archived':'Planalto arquivado como colônia — o terminal já está entregando',
+ 'msg.advance':'Avance a era para liberar','msg.seedCopied':'Semente {s} copiada','msg.seedIs':'Semente: {s}',
+ 'msg.newMap':'Planalto novo · semente {s}','msg.exported':'Save exportado','msg.exportFail':'Não consegui gerar o arquivo',
+ 'msg.loaded':'Fábrica carregada · semente {s}','msg.badFile':'Arquivo de save inválido','msg.badText':'Texto inválido — copie o save inteiro',
+ 'msg.copied':'Save copiado para a área de transferência','msg.selectCopy':'Selecione o texto e use Ctrl+C',
+ 'dlg.jump':'Partir? Este planalto vira colônia e você recomeça num mapa novo, levando tecnologia e créditos.',
+ 'dlg.seed':'Semente do novo planalto (em branco = aleatória):',
+ 'i.ferro':'Minério de ferro','i.cobre':'Minério de cobre','i.carvao':'Carvão','i.quartzo':'Quartzo',
+ 'i.petroleo':'Petróleo bruto','i.titanio':'Minério de titânio','i.barra_fe':'Barra de ferro','i.barra_cu':'Barra de cobre',
+ 'i.chapa':'Chapa de ferro','i.cilindro':'Cilindro','i.fio':'Fio de cobre','i.vidro':'Vidro','i.estrutura':'Estrutura de aço',
+ 'i.circuito':'Circuito','i.sensor':'Sensor óptico','i.plastico':'Plástico','i.betume':'Betume',
+ 'i.refrigerante':'Fluido refrigerante','i.lingote_ti':'Lingote de titânio','i.chapa_ti':'Chapa de titânio',
+ 'i.modulo':'Módulo de controle','i.pp':'Pontos de pesquisa',
+ 'm.cursor':'Cursor','m.cursor.d':'Clique numa máquina para inspecionar e travar a receita dela.',
+ 'm.extrator':'Extrator','m.extrator.d':'Sobre depósito sólido. Empurra o minério pela frente.',
+ 'm.extrator2':'Extrator Mk2','m.extrator2.d':'2,5x mais rápido, bem mais faminto por energia.',
+ 'm.bomba':'Bomba de poço','m.bomba.d':'Só em poço de petróleo. Bombeia barris para a esteira.',
+ 'm.esteira':'Esteira','m.esteira.d':'Leva itens na direção da seta. Arraste para desenhar a linha.',
+ 'm.divisor':'Divisor','m.divisor.d':'Recebe de qualquer lado e alterna entre as saídas livres.',
+ 'm.plataforma':'Plataforma','m.plataforma.d':'Deck suspenso: a esteira de cima cruza por cima da de baixo.',
+ 'm.rampa':'Rampa','m.rampa.d':'Liga os dois níveis, nos dois sentidos, automaticamente.',
+ 'm.fundicao':'Fundição','m.fundicao.d':'Funde minério com carvão.',
+ 'm.laminador':'Laminador','m.laminador.d':'Achata barras em chapas.',
+ 'm.torno':'Torno','m.torno.d':'Usina barras em cilindros.',
+ 'm.trefila':'Trefila','m.trefila.d':'Estica barra de cobre em fio — 2 por barra.',
+ 'm.prensa':'Prensa','m.prensa.d':'Prensa chapa e cilindro em estrutura de aço.',
+ 'm.montadora':'Montadora','m.montadora.d':'Monta circuitos e sensores.',
+ 'm.refinaria':'Refinaria','m.refinaria.d':'Duas saídas: principal pela frente, subproduto pela direita.',
+ 'm.fabrica':'Fábrica','m.fabrica.d':'Monta o módulo de controle.',
+ 'm.forno':'Forno de Indução','m.forno.d':'Funde titânio. Exige fluido refrigerante e come energia como nada antes.',
+ 'm.gerador':'Gerador','m.gerador.d':'Queima carvão: 30 MW por 6 s de combustível.',
+ 'm.turbina':'Turbina','m.turbina.d':'14 MW constantes, sem combustível.',
+ 'm.termeletrica':'Termelétrica','m.termeletrica.d':'Queima carvão ou betume em escala: 150 MW por 5 s de combustível.',
+ 'm.mercado':'Mercado','m.mercado.d':'Vende na hora tudo que chega.',
+ 'm.pesquisa':'Centro de Pesquisa','m.pesquisa.d':'Consome itens e devolve Pontos de Pesquisa.',
+ 'm.terminal':'Terminal de Remessa','m.terminal.d':'Recebe os lotes da remessa. Um por concessão, de graça.',
+ 'm.colonia':'Terminal da Colônia','m.colonia.d':'Recebe o que a colônia da época anterior continua extraindo. Não pode ser demolido.',
+ 't.spd':'Máquinas industriais','t.spd.s':'+15% de velocidade nas máquinas',
+ 't.belt':'Esteiras rápidas','t.belt.s':'+20% na velocidade das esteiras',
+ 't.grid':'Rede reforçada','t.grid.s':'+25 MW na rede base',
+ 't.mine':'Brocas de widia','t.mine.s':'+20% na velocidade de extração',
+ 't.price':'Contratos premium','t.price.s':'+12% no preço de venda',
+ 't.buf':'Buffers ampliados','t.buf.s':'+6 de estoque em cada máquina',
+ 't.alt_torno':'Torneamento com plástico','t.alt_torno.s':'libera receita alternativa do cilindro',
+ 't.alt_refino':'Craqueamento com vidro','t.alt_refino.s':'libera refino de alto rendimento',
+ 't.betume':'Queima de betume','t.betume.s':'gerador aceita betume — 60 MW',
+ 't.cool':'Circuito de refrigeração','t.cool.s':'+20% de velocidade no Forno de Indução',
+ 't.alt_ti':'Sinterização direta','t.alt_ti.s':'libera lingote de titânio sem refrigerante (lento)'
+},
+en:{
+ 'ui.credits':'CREDITS','ui.revenue':'REVENUE','ui.research':'RESEARCH','ui.power':'POWER','ui.seed':'SEED',
+ 'ui.selection':'SELECTION','ui.shipment':'SHIPMENT','ui.colonies':'COLONIES','ui.locked':'locked',
+ 'ui.sound':'♪ sound','ui.mute':'✕ muted','ui.export':'⭳ export','ui.saved':'✓ saved','ui.import':'⭱ import file',
+ 'ui.copy':'⎘ copy','ui.paste':'⎗ paste save','ui.new':'new factory','ui.free':'free','ui.lvl':'lv',
+ 'ui.epoch':'EPOCH','ui.era':'ERA','ui.min':'/min','ui.seedCopy':'click to copy',
+ 'grp.FERRAMENTA':'TOOL','grp.EXTRAÇÃO':'MINING','grp.LOGÍSTICA':'LOGISTICS','grp.PRODUÇÃO':'PRODUCTION',
+ 'grp.ENERGIA':'POWER','grp.DESTINO':'DESTINATION',
+ 'era.1':'SETTLEMENT','era.2':'INDUSTRIAL','era.3':'CHEMICAL','era.4':'LIGHT ALLOYS',
+ 'ep.1':'PLATEAU CONCESSION','ep.2':'TITANIUM FRONTIER',
+ 'hint':'<kbd>S</kbd> cursor · <kbd>drag</kbd> belt · <kbd>R</kbd> rotate · <kbd>right</kbd> demolish · <kbd>space</kbd> camera · <kbd>scroll</kbd> zoom · <kbd>N</kbd> mute',
+ 'man.sub':'EPOCHS I & II · PLATEAU AND FRONTIER',
+ 'man.p':'The concession opens in stages, and your production line sets the pace.',
+ 'man.l1':'The <b>Shipping Terminal</b> asks for batches. Deliver what it wants and the era advances: the concession border opens, freeing new ground and new ores.',
+ 'man.l2':'The <b>Research Lab</b> consumes items and returns research points. Every upgrade and every alternate recipe comes from there — money now only builds.',
+ 'man.l3':'The <b>Refinery</b> has two outputs: plastic leaves the front, bitumen leaves to the right. Fail to drain the bitumen and it clogs and stops.',
+ 'man.l4':'Click any machine with the <b>cursor</b> (key S) to lock which recipe it runs.',
+ 'man.l5':'Once the Era III shipment is done you may <b>depart</b>: the plateau becomes a colony and keeps sending ore through a terminal on the new map, where the titanium era begins.',
+ 'man.go':'Take the concession',
+ 'blk.sub':'AVAILABLE ON DESKTOP ONLY',
+ 'blk.p':'This game was built for mouse and keyboard. On a touch screen there is no way to drag belts, rotate buildings or demolish, so I would rather block it than let you into a broken state.',
+ 'blk.l1':'<b>drag</b> draws a whole belt line','blk.l2':'<b>right click</b> demolishes',
+ 'blk.l3':'<b>R</b> rotates · <b>space</b> pans the camera · <b>scroll</b> zooms',
+ 'blk.end':'Open it on a PC or laptop to play.',
+ 'tx.out':'Copy save','tx.outHelp':'The preview blocks file downloads. Copy this text and paste it into the other version with the "paste save" button.',
+ 'tx.in':'Paste save','tx.inHelp':'Paste the text copied from the other version here and load it.',
+ 'tx.copy':'copy all','tx.load':'load this save','tx.close':'close',
+ 'ins.use':'Draw','ins.dep':'Deposit','ins.mining':'Mining','ins.burning':'Burning','ins.making':'Producing',
+ 'ins.idle':'idle','ins.outF':'front output','ins.outR':'right output','ins.recipe':'Recipe','ins.auto':'automatic',
+ 'ins.outside':'Outside the open concession.','ins.coal':'coal · 30 MW','ins.bit':'bitumen · 60 MW','ins.deck':' · deck',
+ 'shp.deliver':'Deliver at the Terminal to open the next era.','shp.none':'No shipment defined for this era.',
+ 'shp.noTerminal':'No Terminal built yet (key X, free).',
+ 'shp.epochDone':'Epoch complete. If you depart, this plateau becomes a colony and keeps sending:',
+ 'shp.nothing':'nothing — no active miner','shp.jump':'DEPART FOR THE NEXT EPOCH',
+ 'shp.wip':'Era V in development. The factory keeps running.',
+ 'tech.empty':'Build a Research Lab to generate RP.',
+ 'col.one':'active','col.many':'active','col.line':'Colony {n} · seed {s}','tool.era':'era {n}',
+ 'msg.outside':'Outside the open concession','msg.oneTerminal':'Only one Terminal per concession',
+ 'msg.noDeck':'You cannot raise a deck over a machine','msg.deckBelts':'Only belts and splitters go on the deck',
+ 'msg.titanium':'Titanium is too hard — needs the Miner Mk2','msg.oilOnly':'The pump only goes on an oil well',
+ 'msg.solidOnly':'Miners only go on solid deposits','msg.noCredits':'Not enough credits',
+ 'msg.noDemolish':'The Colony Terminal cannot be demolished','msg.shipDone':'Shipment complete — the concession may depart',
+ 'msg.expanded':'Concession expanded — new ground and ores opened','msg.researched':'{n} researched',
+ 'msg.level':'{n} level {l}','msg.noExtractor':'No miner running — the colony would send nothing',
+ 'msg.archived':'Plateau archived as a colony — the terminal is already delivering',
+ 'msg.advance':'Advance the era to unlock','msg.seedCopied':'Seed {s} copied','msg.seedIs':'Seed: {s}',
+ 'msg.newMap':'New plateau · seed {s}','msg.exported':'Save exported','msg.exportFail':'Could not build the file',
+ 'msg.loaded':'Factory loaded · seed {s}','msg.badFile':'Invalid save file','msg.badText':'Invalid text — copy the whole save',
+ 'msg.copied':'Save copied to the clipboard','msg.selectCopy':'Select the text and press Ctrl+C',
+ 'dlg.jump':'Depart? This plateau becomes a colony and you restart on a new map, keeping technology and credits.',
+ 'dlg.seed':'Seed for the new plateau (blank = random):',
+ 'i.ferro':'Iron ore','i.cobre':'Copper ore','i.carvao':'Coal','i.quartzo':'Quartz',
+ 'i.petroleo':'Crude oil','i.titanio':'Titanium ore','i.barra_fe':'Iron bar','i.barra_cu':'Copper bar',
+ 'i.chapa':'Iron plate','i.cilindro':'Cylinder','i.fio':'Copper wire','i.vidro':'Glass','i.estrutura':'Steel frame',
+ 'i.circuito':'Circuit board','i.sensor':'Optical sensor','i.plastico':'Plastic','i.betume':'Bitumen',
+ 'i.refrigerante':'Coolant','i.lingote_ti':'Titanium ingot','i.chapa_ti':'Titanium plate',
+ 'i.modulo':'Control module','i.pp':'Research points',
+ 'm.cursor':'Cursor','m.cursor.d':'Click a machine to inspect it and lock its recipe.',
+ 'm.extrator':'Miner','m.extrator.d':'On a solid deposit. Pushes ore out the front.',
+ 'm.extrator2':'Miner Mk2','m.extrator2.d':'2.5x faster and far hungrier for power.',
+ 'm.bomba':'Oil pump','m.bomba.d':'Only on an oil well. Pumps barrels onto the belt.',
+ 'm.esteira':'Belt','m.esteira.d':"Carries items the way the arrow points. Drag to draw the whole line.",
+ 'm.divisor':'Splitter','m.divisor.d':'Takes input from any side and alternates between free outputs.',
+ 'm.plataforma':'Platform','m.plataforma.d':'Raised deck: the belt on top crosses over the one below.',
+ 'm.rampa':'Ramp','m.rampa.d':'Links both levels, both ways, automatically.',
+ 'm.fundicao':'Smelter','m.fundicao.d':'Smelts ore with coal.',
+ 'm.laminador':'Rolling mill','m.laminador.d':'Flattens bars into plates.',
+ 'm.torno':'Lathe','m.torno.d':'Machines bars into cylinders.',
+ 'm.trefila':'Wire drawer','m.trefila.d':'Draws copper bars into wire — 2 per bar.',
+ 'm.prensa':'Press','m.prensa.d':'Presses plate and cylinder into a steel frame.',
+ 'm.montadora':'Assembler','m.montadora.d':'Assembles circuit boards and sensors.',
+ 'm.refinaria':'Refinery','m.refinaria.d':'Two outputs: main product out the front, by-product to the right.',
+ 'm.fabrica':'Manufactory','m.fabrica.d':'Builds the control module.',
+ 'm.forno':'Induction furnace','m.forno.d':'Melts titanium. Needs coolant and eats power like nothing before it.',
+ 'm.gerador':'Generator','m.gerador.d':'Burns coal: 30 MW per 6 s of fuel.',
+ 'm.turbina':'Wind turbine','m.turbina.d':'A steady 14 MW, no fuel.',
+ 'm.termeletrica':'Power plant','m.termeletrica.d':'Burns coal or bitumen at scale: 150 MW per 5 s of fuel.',
+ 'm.mercado':'Market','m.mercado.d':'Sells everything that arrives, on the spot.',
+ 'm.pesquisa':'Research Lab','m.pesquisa.d':'Consumes items and returns research points.',
+ 'm.terminal':'Shipping Terminal','m.terminal.d':'Receives the shipment batches. One per concession, free.',
+ 'm.colonia':'Colony Terminal','m.colonia.d':"Receives what the previous epoch's colony keeps mining. Cannot be demolished.",
+ 't.spd':'Industrial machining','t.spd.s':'+15% machine speed',
+ 't.belt':'Fast belts','t.belt.s':'+20% belt speed',
+ 't.grid':'Reinforced grid','t.grid.s':'+25 MW to the base grid',
+ 't.mine':'Carbide drills','t.mine.s':'+20% mining speed',
+ 't.price':'Premium contracts','t.price.s':'+12% selling price',
+ 't.buf':'Expanded buffers','t.buf.s':'+6 stock in every machine',
+ 't.alt_torno':'Plastic-backed turning','t.alt_torno.s':'unlocks the alternate cylinder recipe',
+ 't.alt_refino':'Glass-catalyst cracking','t.alt_refino.s':'unlocks high-yield refining',
+ 't.betume':'Bitumen burning','t.betume.s':'generators accept bitumen — 60 MW',
+ 't.cool':'Cooling loop','t.cool.s':'+20% induction furnace speed',
+ 't.alt_ti':'Direct sintering','t.alt_ti.s':'unlocks titanium ingots without coolant (slow)'
+},
+ja:{
+ 'ui.credits':'クレジット','ui.revenue':'収入','ui.research':'研究','ui.power':'電力','ui.seed':'シード',
+ 'ui.selection':'選択','ui.shipment':'出荷','ui.colonies':'植民地','ui.locked':'固定中',
+ 'ui.sound':'♪ 音','ui.mute':'✕ 消音','ui.export':'⭳ 書き出し','ui.saved':'✓ 保存','ui.import':'⭱ ファイル読込',
+ 'ui.copy':'⎘ コピー','ui.paste':'⎗ セーブ貼付','ui.new':'新しい工場','ui.free':'無料','ui.lvl':'Lv',
+ 'ui.epoch':'時代','ui.era':'期','ui.min':'/分','ui.seedCopy':'クリックでコピー',
+ 'grp.FERRAMENTA':'ツール','grp.EXTRAÇÃO':'採掘','grp.LOGÍSTICA':'物流','grp.PRODUÇÃO':'生産',
+ 'grp.ENERGIA':'電力','grp.DESTINO':'出荷先',
+ 'era.1':'開拓','era.2':'工業','era.3':'化学','era.4':'軽合金',
+ 'ep.1':'高原の利権','ep.2':'チタンの辺境',
+ 'hint':'<kbd>S</kbd> カーソル · <kbd>ドラッグ</kbd> ベルト · <kbd>R</kbd> 回転 · <kbd>右</kbd> 解体 · <kbd>space</kbd> 視点 · <kbd>scroll</kbd> 拡大 · <kbd>N</kbd> 消音',
+ 'man.sub':'第I・II時代 · 高原と辺境',
+ 'man.p':'利権は段階的に解放され、その速さを決めるのはあなたの生産ラインです。',
+ 'man.l1':'<b>出荷ターミナル</b>がロットを要求します。要求を満たすと期が進み、利権の境界が広がって新しい土地と鉱石が解放されます。',
+ 'man.l2':'<b>研究所</b>はアイテムを消費して研究ポイントを生みます。強化も代替レシピもすべてここから。お金は建設専用になりました。',
+ 'man.l3':'<b>精製プラント</b>には出口が2つあります。プラスチックは正面、ビチューメンは右へ。ビチューメンを流さないと詰まって停止します。',
+ 'man.l4':'<b>カーソル</b>（Sキー）で機械をクリックすると、生産するレシピを固定できます。',
+ 'man.l5':'第III期の出荷を終えると<b>出発</b>できます。高原は植民地となり、新しいマップのターミナルへ鉱石を送り続けます。そこからチタンの時代が始まります。',
+ 'man.go':'利権を引き受ける',
+ 'blk.sub':'PC専用',
+ 'blk.p':'このゲームはマウスとキーボード向けに作られています。タッチ画面ではベルトのドラッグ、建物の回転、解体ができないため、壊れた状態で遊ばせるよりブロックすることにしました。',
+ 'blk.l1':'<b>ドラッグ</b>でベルトを一気に敷設','blk.l2':'<b>右クリック</b>で解体',
+ 'blk.l3':'<b>R</b> 回転 · <b>space</b> 視点移動 · <b>scroll</b> 拡大縮小',
+ 'blk.end':'PCまたはノートパソコンで開いてください。',
+ 'tx.out':'セーブをコピー','tx.outHelp':'プレビューではファイルのダウンロードがブロックされます。このテキストをコピーし、別バージョンの「セーブ貼付」から読み込んでください。',
+ 'tx.in':'セーブを貼り付け','tx.inHelp':'コピーしたテキストをここに貼り付けて読み込みます。',
+ 'tx.copy':'すべてコピー','tx.load':'このセーブを読み込む','tx.close':'閉じる',
+ 'ins.use':'消費電力','ins.dep':'鉱床','ins.mining':'採掘中','ins.burning':'燃焼中','ins.making':'生産中',
+ 'ins.idle':'停止','ins.outF':'正面の出口','ins.outR':'右の出口','ins.recipe':'レシピ','ins.auto':'自動',
+ 'ins.outside':'解放された利権の外です。','ins.coal':'石炭 · 30 MW','ins.bit':'ビチューメン · 60 MW','ins.deck':' · 高架',
+ 'shp.deliver':'ターミナルへ納入すると次の期が開きます。','shp.none':'この期の出荷は未設定です。',
+ 'shp.noTerminal':'ターミナルが未建設です（Xキー・無料）。',
+ 'shp.epochDone':'時代が完了しました。出発すると、この高原は植民地となり送り続けます：',
+ 'shp.nothing':'なし — 稼働中の採掘機がありません','shp.jump':'次の時代へ出発する',
+ 'shp.wip':'第V期は開発中です。工場はそのまま稼働します。',
+ 'tech.empty':'研究所を建てると研究ポイントが貯まります。',
+ 'col.one':'稼働中','col.many':'稼働中','col.line':'植民地 {n} · シード {s}','tool.era':'第{n}期',
+ 'msg.outside':'解放された利権の外です','msg.oneTerminal':'ターミナルは利権ごとに1つだけです',
+ 'msg.noDeck':'機械の上には高架を建てられません','msg.deckBelts':'高架にはベルトと分配器だけ置けます',
+ 'msg.titanium':'チタンは硬すぎます — 採掘機Mk2が必要です','msg.oilOnly':'ポンプは油井にのみ設置できます',
+ 'msg.solidOnly':'採掘機は固形鉱床の上にのみ設置できます','msg.noCredits':'クレジットが足りません',
+ 'msg.noDemolish':'植民地ターミナルは解体できません','msg.shipDone':'出荷完了 — 出発できます',
+ 'msg.expanded':'利権が拡張されました — 新しい土地と鉱石が解放','msg.researched':'{n} を研究しました',
+ 'msg.level':'{n} レベル {l}','msg.noExtractor':'稼働中の採掘機がなく、植民地は何も送れません',
+ 'msg.archived':'高原を植民地として記録しました — ターミナルが納入を開始',
+ 'msg.advance':'期を進めると解放されます','msg.seedCopied':'シード {s} をコピーしました','msg.seedIs':'シード: {s}',
+ 'msg.newMap':'新しい高原 · シード {s}','msg.exported':'セーブを書き出しました','msg.exportFail':'ファイルを作成できませんでした',
+ 'msg.loaded':'工場を読み込みました · シード {s}','msg.badFile':'セーブファイルが不正です','msg.badText':'テキストが不正です — セーブ全体をコピーしてください',
+ 'msg.copied':'セーブをクリップボードにコピーしました','msg.selectCopy':'テキストを選択して Ctrl+C を押してください',
+ 'dlg.jump':'出発しますか？ この高原は植民地となり、技術とクレジットを持って新しいマップで再出発します。',
+ 'dlg.seed':'新しい高原のシード（空欄でランダム）:',
+ 'i.ferro':'鉄鉱石','i.cobre':'銅鉱石','i.carvao':'石炭','i.quartzo':'石英',
+ 'i.petroleo':'原油','i.titanio':'チタン鉱石','i.barra_fe':'鉄インゴット','i.barra_cu':'銅インゴット',
+ 'i.chapa':'鉄板','i.cilindro':'シリンダー','i.fio':'銅線','i.vidro':'ガラス','i.estrutura':'鋼フレーム',
+ 'i.circuito':'回路基板','i.sensor':'光学センサー','i.plastico':'プラスチック','i.betume':'ビチューメン',
+ 'i.refrigerante':'冷却剤','i.lingote_ti':'チタンインゴット','i.chapa_ti':'チタン板',
+ 'i.modulo':'制御モジュール','i.pp':'研究ポイント',
+ 'm.cursor':'カーソル','m.cursor.d':'機械をクリックすると詳細を確認し、レシピを固定できます。',
+ 'm.extrator':'採掘機','m.extrator.d':'固形鉱床の上に設置。正面へ鉱石を押し出します。',
+ 'm.extrator2':'採掘機 Mk2','m.extrator2.d':'2.5倍の速度。そのぶん電力をはるかに多く消費します。',
+ 'm.bomba':'油井ポンプ','m.bomba.d':'油井専用。バレルをベルトへ送り出します。',
+ 'm.esteira':'ベルトコンベア','m.esteira.d':'矢印の方向へアイテムを運びます。ドラッグで一気に敷設。',
+ 'm.divisor':'分配器','m.divisor.d':'どの面からも受け取り、空いている出口へ交互に流します。',
+ 'm.plataforma':'高架プラットフォーム','m.plataforma.d':'上のベルトが下のベルトを跨いで通ります。',
+ 'm.rampa':'スロープ','m.rampa.d':'2つの高さを、両方向とも自動でつなぎます。',
+ 'm.fundicao':'製錬炉','m.fundicao.d':'鉱石を石炭とともに製錬します。',
+ 'm.laminador':'圧延機','m.laminador.d':'インゴットを板に圧延します。',
+ 'm.torno':'旋盤','m.torno.d':'インゴットを削ってシリンダーにします。',
+ 'm.trefila':'伸線機','m.trefila.d':'銅インゴットを線に伸ばします — 1本から2本。',
+ 'm.prensa':'プレス機','m.prensa.d':'板とシリンダーを鋼フレームに成形します。',
+ 'm.montadora':'組立機','m.montadora.d':'回路基板とセンサーを組み立てます。',
+ 'm.refinaria':'精製プラント','m.refinaria.d':'出口は2つ。主生成物は正面、副産物は右へ。',
+ 'm.fabrica':'製造工場','m.fabrica.d':'制御モジュールを製造します。',
+ 'm.forno':'誘導炉','m.forno.d':'チタンを溶解します。冷却剤が必要で、消費電力はこれまでの比ではありません。',
+ 'm.gerador':'発電機','m.gerador.d':'石炭を燃焼。燃料6秒ごとに30MW。',
+ 'm.turbina':'風力タービン','m.turbina.d':'燃料なしで常時14MW。',
+ 'm.termeletrica':'火力発電所','m.termeletrica.d':'石炭やビチューメンを大規模に燃焼。燃料5秒ごとに150MW。',
+ 'm.mercado':'市場','m.mercado.d':'届いたものをその場で売却します。',
+ 'm.pesquisa':'研究所','m.pesquisa.d':'アイテムを消費して研究ポイントを生み出します。',
+ 'm.terminal':'出荷ターミナル','m.terminal.d':'出荷ロットを受け取ります。利権ごとに1つ、無料。',
+ 'm.colonia':'植民地ターミナル','m.colonia.d':'前の時代の植民地が採掘し続ける資源を受け取ります。解体できません。',
+ 't.spd':'産業機械','t.spd.s':'機械の速度 +15%',
+ 't.belt':'高速ベルト','t.belt.s':'ベルト速度 +20%',
+ 't.grid':'電力網の強化','t.grid.s':'基礎電力 +25 MW',
+ 't.mine':'超硬ドリル','t.mine.s':'採掘速度 +20%',
+ 't.price':'プレミアム契約','t.price.s':'売却価格 +12%',
+ 't.buf':'バッファ拡張','t.buf.s':'各機械の在庫 +6',
+ 't.alt_torno':'プラスチック併用旋削','t.alt_torno.s':'シリンダーの代替レシピを解放',
+ 't.alt_refino':'ガラス触媒分解','t.alt_refino.s':'高収率の精製を解放',
+ 't.betume':'ビチューメン燃焼','t.betume.s':'発電機がビチューメン対応 — 60 MW',
+ 't.cool':'冷却回路','t.cool.s':'誘導炉の速度 +20%',
+ 't.alt_ti':'直接焼結','t.alt_ti.s':'冷却剤なしのチタンインゴットを解放（低速）'
+},
+ru:{
+ 'ui.credits':'КРЕДИТЫ','ui.revenue':'ДОХОД','ui.research':'ИССЛЕДОВАНИЯ','ui.power':'ЭНЕРГИЯ','ui.seed':'СИД',
+ 'ui.selection':'ВЫБОР','ui.shipment':'ОТГРУЗКА','ui.colonies':'КОЛОНИИ','ui.locked':'закреплено',
+ 'ui.sound':'♪ звук','ui.mute':'✕ без звука','ui.export':'⭳ экспорт','ui.saved':'✓ сохранено','ui.import':'⭱ импорт файла',
+ 'ui.copy':'⎘ копировать','ui.paste':'⎗ вставить сейв','ui.new':'новая фабрика','ui.free':'бесплатно','ui.lvl':'ур',
+ 'ui.epoch':'ЭПОХА','ui.era':'ЭРА','ui.min':'/мин','ui.seedCopy':'нажмите, чтобы скопировать',
+ 'grp.FERRAMENTA':'ИНСТРУМЕНТ','grp.EXTRAÇÃO':'ДОБЫЧА','grp.LOGÍSTICA':'ЛОГИСТИКА','grp.PRODUÇÃO':'ПРОИЗВОДСТВО',
+ 'grp.ENERGIA':'ЭНЕРГИЯ','grp.DESTINO':'НАЗНАЧЕНИЕ',
+ 'era.1':'ОСВОЕНИЕ','era.2':'ИНДУСТРИЯ','era.3':'ХИМИЯ','era.4':'ЛЁГКИЕ СПЛАВЫ',
+ 'ep.1':'КОНЦЕССИЯ ПЛАТО','ep.2':'ТИТАНОВЫЙ РУБЕЖ',
+ 'hint':'<kbd>S</kbd> курсор · <kbd>тянуть</kbd> лента · <kbd>R</kbd> поворот · <kbd>ПКМ</kbd> снос · <kbd>пробел</kbd> камера · <kbd>колесо</kbd> зум · <kbd>N</kbd> звук',
+ 'man.sub':'ЭПОХИ I и II · ПЛАТО И РУБЕЖ',
+ 'man.p':'Концессия открывается этапами, а темп задаёт ваша производственная линия.',
+ 'man.l1':'<b>Отгрузочный терминал</b> запрашивает партии. Выполните заказ — и эра сменится: граница концессии раздвинется, открыв новую землю и новые руды.',
+ 'man.l2':'<b>Лаборатория</b> потребляет предметы и выдаёт очки исследований. Все улучшения и альтернативные рецепты идут оттуда — деньги теперь только строят.',
+ 'man.l3':'У <b>НПЗ</b> два выхода: пластик идёт вперёд, битум — направо. Не отводите битум — завод забьётся и встанет.',
+ 'man.l4':'Щёлкните по машине <b>курсором</b> (клавиша S), чтобы закрепить рецепт, который она производит.',
+ 'man.l5':'Закрыв отгрузку Эры III, вы можете <b>отправиться дальше</b>: плато станет колонией и продолжит слать руду через терминал на новой карте, где начинается эра титана.',
+ 'man.go':'Принять концессию',
+ 'blk.sub':'ТОЛЬКО ДЛЯ КОМПЬЮТЕРА',
+ 'blk.p':'Игра сделана под мышь и клавиатуру. На сенсорном экране нельзя протянуть ленту, повернуть здание или снести его, поэтому лучше заблокировать вход, чем пустить в сломанное состояние.',
+ 'blk.l1':'<b>перетаскивание</b> строит всю линию ленты','blk.l2':'<b>правая кнопка</b> сносит',
+ 'blk.l3':'<b>R</b> поворот · <b>пробел</b> двигает камеру · <b>колесо</b> зум',
+ 'blk.end':'Откройте на ПК или ноутбуке, чтобы играть.',
+ 'tx.out':'Скопировать сейв','tx.outHelp':'Предпросмотр блокирует скачивание файлов. Скопируйте этот текст и вставьте в другой версии кнопкой «вставить сейв».',
+ 'tx.in':'Вставить сейв','tx.inHelp':'Вставьте сюда скопированный текст и загрузите его.',
+ 'tx.copy':'скопировать всё','tx.load':'загрузить этот сейв','tx.close':'закрыть',
+ 'ins.use':'Потребление','ins.dep':'Месторождение','ins.mining':'Добывает','ins.burning':'Сжигает','ins.making':'Производит',
+ 'ins.idle':'простой','ins.outF':'выход вперёд','ins.outR':'выход направо','ins.recipe':'Рецепт','ins.auto':'автоматически',
+ 'ins.outside':'За пределами открытой концессии.','ins.coal':'уголь · 30 МВт','ins.bit':'битум · 60 МВт','ins.deck':' · эстакада',
+ 'shp.deliver':'Доставьте на терминал, чтобы открыть следующую эру.','shp.none':'Для этой эры отгрузка не задана.',
+ 'shp.noTerminal':'Терминал не построен (клавиша X, бесплатно).',
+ 'shp.epochDone':'Эпоха завершена. Если отправитесь дальше, это плато станет колонией и продолжит слать:',
+ 'shp.nothing':'ничего — нет работающих добытчиков','shp.jump':'ОТПРАВИТЬСЯ В СЛЕДУЮЩУЮ ЭПОХУ',
+ 'shp.wip':'Эра V в разработке. Фабрика продолжает работать.',
+ 'tech.empty':'Постройте лабораторию, чтобы получать PP.',
+ 'col.one':'активна','col.many':'активны','col.line':'Колония {n} · сид {s}','tool.era':'эра {n}',
+ 'msg.outside':'За пределами открытой концессии','msg.oneTerminal':'Только один терминал на концессию',
+ 'msg.noDeck':'Нельзя поставить эстакаду поверх машины','msg.deckBelts':'На эстакаде только ленты и разделители',
+ 'msg.titanium':'Титан слишком твёрдый — нужен Добытчик Mk2','msg.oilOnly':'Насос ставится только на нефтяную скважину',
+ 'msg.solidOnly':'Добытчик ставится только на твёрдое месторождение','msg.noCredits':'Недостаточно кредитов',
+ 'msg.noDemolish':'Терминал колонии нельзя снести','msg.shipDone':'Отгрузка выполнена — можно отправляться',
+ 'msg.expanded':'Концессия расширена — открыты новая земля и руды','msg.researched':'{n} исследовано',
+ 'msg.level':'{n} уровень {l}','msg.noExtractor':'Нет работающих добытчиков — колония ничего не пришлёт',
+ 'msg.archived':'Плато сохранено как колония — терминал уже поставляет',
+ 'msg.advance':'Продвиньте эру, чтобы открыть','msg.seedCopied':'Сид {s} скопирован','msg.seedIs':'Сид: {s}',
+ 'msg.newMap':'Новое плато · сид {s}','msg.exported':'Сейв экспортирован','msg.exportFail':'Не удалось создать файл',
+ 'msg.loaded':'Фабрика загружена · сид {s}','msg.badFile':'Повреждённый файл сейва','msg.badText':'Неверный текст — скопируйте сейв целиком',
+ 'msg.copied':'Сейв скопирован в буфер обмена','msg.selectCopy':'Выделите текст и нажмите Ctrl+C',
+ 'dlg.jump':'Отправиться? Это плато станет колонией, а вы начнёте на новой карте, сохранив технологии и кредиты.',
+ 'dlg.seed':'Сид нового плато (пусто — случайный):',
+ 'i.ferro':'Железная руда','i.cobre':'Медная руда','i.carvao':'Уголь','i.quartzo':'Кварц',
+ 'i.petroleo':'Сырая нефть','i.titanio':'Титановая руда','i.barra_fe':'Железный слиток','i.barra_cu':'Медный слиток',
+ 'i.chapa':'Железная пластина','i.cilindro':'Цилиндр','i.fio':'Медный провод','i.vidro':'Стекло','i.estrutura':'Стальная рама',
+ 'i.circuito':'Микросхема','i.sensor':'Оптический датчик','i.plastico':'Пластик','i.betume':'Битум',
+ 'i.refrigerante':'Хладагент','i.lingote_ti':'Титановый слиток','i.chapa_ti':'Титановая пластина',
+ 'i.modulo':'Модуль управления','i.pp':'Очки исследований',
+ 'm.cursor':'Курсор','m.cursor.d':'Нажмите на машину, чтобы осмотреть её и закрепить рецепт.',
+ 'm.extrator':'Добытчик','m.extrator.d':'Ставится на твёрдое месторождение. Выдаёт руду вперёд.',
+ 'm.extrator2':'Добытчик Mk2','m.extrator2.d':'В 2,5 раза быстрее и куда прожорливее по энергии.',
+ 'm.bomba':'Нефтяной насос','m.bomba.d':'Только на скважине. Подаёт бочки на ленту.',
+ 'm.esteira':'Конвейер','m.esteira.d':'Везёт предметы по стрелке. Тяните, чтобы проложить всю линию.',
+ 'm.divisor':'Разделитель','m.divisor.d':'Принимает с любой стороны и чередует свободные выходы.',
+ 'm.plataforma':'Эстакада','m.plataforma.d':'Верхняя лента проходит над нижней.',
+ 'm.rampa':'Пандус','m.rampa.d':'Соединяет оба уровня в обе стороны автоматически.',
+ 'm.fundicao':'Плавильня','m.fundicao.d':'Плавит руду вместе с углём.',
+ 'm.laminador':'Прокатный стан','m.laminador.d':'Раскатывает слитки в пластины.',
+ 'm.torno':'Токарный станок','m.torno.d':'Вытачивает цилиндры из слитков.',
+ 'm.trefila':'Волочильный стан','m.trefila.d':'Тянет медный слиток в провод — два за слиток.',
+ 'm.prensa':'Пресс','m.prensa.d':'Прессует пластину и цилиндр в стальную раму.',
+ 'm.montadora':'Сборщик','m.montadora.d':'Собирает микросхемы и датчики.',
+ 'm.refinaria':'НПЗ','m.refinaria.d':'Два выхода: основной продукт вперёд, побочный — направо.',
+ 'm.fabrica':'Мануфактура','m.fabrica.d':'Собирает модуль управления.',
+ 'm.forno':'Индукционная печь','m.forno.d':'Плавит титан. Требует хладагент и потребляет энергии как ничто до неё.',
+ 'm.gerador':'Генератор','m.gerador.d':'Сжигает уголь: 30 МВт за 6 с топлива.',
+ 'm.turbina':'Ветротурбина','m.turbina.d':'Постоянные 14 МВт, без топлива.',
+ 'm.termeletrica':'ТЭС','m.termeletrica.d':'Сжигает уголь или битум в масштабе: 150 МВт за 5 с топлива.',
+ 'm.mercado':'Рынок','m.mercado.d':'Мгновенно продаёт всё, что приходит.',
+ 'm.pesquisa':'Лаборатория','m.pesquisa.d':'Потребляет предметы и выдаёт очки исследований.',
+ 'm.terminal':'Отгрузочный терминал','m.terminal.d':'Принимает партии отгрузки. Один на концессию, бесплатно.',
+ 'm.colonia':'Терминал колонии','m.colonia.d':'Принимает то, что продолжает добывать колония прошлой эпохи. Снести нельзя.',
+ 't.spd':'Промышленные станки','t.spd.s':'+15% к скорости машин',
+ 't.belt':'Быстрые конвейеры','t.belt.s':'+20% к скорости лент',
+ 't.grid':'Усиленная сеть','t.grid.s':'+25 МВт к базовой сети',
+ 't.mine':'Твердосплавные буры','t.mine.s':'+20% к скорости добычи',
+ 't.price':'Премиальные контракты','t.price.s':'+12% к цене продажи',
+ 't.buf':'Расширенные буферы','t.buf.s':'+6 к запасу в каждой машине',
+ 't.alt_torno':'Точение с пластиком','t.alt_torno.s':'открывает альтернативный рецепт цилиндра',
+ 't.alt_refino':'Крекинг со стеклом','t.alt_refino.s':'открывает высокопроизводительную переработку',
+ 't.betume':'Сжигание битума','t.betume.s':'генератор принимает битум — 60 МВт',
+ 't.cool':'Контур охлаждения','t.cool.s':'+20% к скорости индукционной печи',
+ 't.alt_ti':'Прямое спекание','t.alt_ti.s':'открывает титановый слиток без хладагента (медленно)'
+}};
+const T_=(k,p)=>t(k,p);
+function t(k,p){
+  let s=(STR[lang]&&STR[lang][k])||STR.pt[k]||k;
+  if(p) for(const a in p) s=s.split('{'+a+'}').join(p[a]);
+  return s;
+}
+const iname=k=>t('i.'+k), mname=k=>t('m.'+k), mdesc=k=>t('m.'+k+'.d');
+const tname=k=>t('t.'+k), tsub=k=>t('t.'+k+'.s');
+const nfmt=n=>Math.round(n).toLocaleString(LOC[lang]);
+function eraLabel(){ return T_('ui.epoch')+' '+RM[epoch]+' · '+T_('ui.era')+' '+RM[era]+' · '+t('era.'+era); }
 
 /* ═══════════════════ DADOS ═══════════════════ */
 const ITEMS={
@@ -366,7 +758,7 @@ const el=id=>document.getElementById(id);
 const idx=(x,y)=>y*W+x;
 const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
 const at=(x,y)=>inb(x,y)?tiles[idx(x,y)]:null;
-const fmt=n=>'$'+Math.floor(n).toLocaleString('pt-BR');
+const fmt=n=>'$'+Math.floor(n).toLocaleString(LOC[lang]);
 const sx=(gx,gy)=>(gx-gy)*TW/2, sy=(gx,gy)=>(gx+gy)*TH/2;
 const eraSlot=e=>((e||era)-1)%3+1;
 const inEra=(x,y,e)=>Math.max(Math.abs(x-C+.5),Math.abs(y-C+.5))<=ERA_R[eraSlot(e)];
@@ -497,26 +889,26 @@ function place(x,y,type,d,silent){
   const t=at(x,y), def=B[type];
   if(!t||def.tool) return false;
   if(def.era>era) return false;
-  if(!inEra(x,y)){ if(!silent){toast('Fora da concessão liberada');SFX.error()} return false; }
-  if(def.unique&&hasTerminal){ if(!silent){toast('Só um Terminal por concessão');SFX.error()} return false; }
+  if(!inEra(x,y)){ if(!silent){toast(T_('msg.outside'));SFX.error()} return false; }
+  if(def.unique&&hasTerminal){ if(!silent){toast(T_('msg.oneTerminal'));SFX.error()} return false; }
   const onTop=!!t.plat&&!def.plat&&!def.ramp;
   if(def.plat){
     if(t.plat||(t.b&&t.b.type==='rampa')) return false;
-    if(t.b&&B[t.b.type].pw){ if(!silent){toast('Não dá para erguer deck sobre máquina');SFX.error()} return false; }
+    if(t.b&&B[t.b.type].pw){ if(!silent){toast(T_('msg.noDeck'));SFX.error()} return false; }
   } else if(def.ramp){
     if(t.plat||t.b) return false;
   } else if(onTop){
-    if(type!=='esteira'&&type!=='divisor'){ if(!silent){toast('No deck só entram esteiras e divisores');SFX.error()} return false; }
+    if(type!=='esteira'&&type!=='divisor'){ if(!silent){toast(T_('msg.deckBelts'));SFX.error()} return false; }
     if(t.top){ if(t.top.type===type&&type==='esteira'&&t.top.dir!==d){t.top.dir=d;return true} return false; }
   } else {
     if(t.b){ if(t.b.type===type&&type==='esteira'&&t.b.dir!==d){t.b.dir=d;return true} return false; }
     if(def.ore){
-      if(t.ore==='titanio'&&type==='extrator'){ if(!silent){toast('Titânio é duro demais — exige Extrator Mk2');SFX.error()} return false; }
+      if(t.ore==='titanio'&&type==='extrator'){ if(!silent){toast(T_('msg.titanium'));SFX.error()} return false; }
       const ok = def.ore==='petroleo' ? t.ore==='petroleo' : (t.ore&&t.ore!=='petroleo');
-      if(!ok){ if(!silent){toast(def.ore==='petroleo'?'A bomba só entra em poço de petróleo':'Extrator só sobre depósito sólido');SFX.error()} return false; }
+      if(!ok){ if(!silent){toast(T_(def.ore==='petroleo'?'msg.oilOnly':'msg.solidOnly'));SFX.error()} return false; }
     }
   }
-  if(money<def.cost){ if(!silent){toast('Créditos insuficientes');SFX.error()} return false; }
+  if(money<def.cost){ if(!silent){toast(T_('msg.noCredits'));SFX.error()} return false; }
   money-=def.cost;
   if(def.plat) t.plat=1;
   else{
@@ -530,7 +922,7 @@ function place(x,y,type,d,silent){
 }
 function demolish(x,y){
   const t=at(x,y); if(!t) return;
-  if(!t.top&&!t.plat&&t.b&&t.b.type==='colonia'){ toast('O Terminal da Colônia não pode ser demolido'); SFX.error(); return; }
+  if(!t.top&&!t.plat&&t.b&&t.b.type==='colonia'){ toast(T_('msg.noDemolish')); SFX.error(); return; }
   let c=0,b=null;
   if(t.top){ b=t.top; c=B[b.type].cost; t.top=null; }
   else if(t.plat){ c=B.plataforma.cost; t.plat=0; }
@@ -592,17 +984,17 @@ function shipDone(){
 }
 function checkShip(){
   if(!shipDone()) return;
-  if(era%3===0){ if(!readyJump){ readyJump=true; SFX.era(); toast('Remessa completa — a concessão pode partir'); drawShip(); } return; }
+  if(era%3===0){ if(!readyJump){ readyJump=true; SFX.era(); toast(T_('msg.shipDone')); drawShip(); } return; }
   if(era>=MAX_ERA) return;
   era++; shipped={}; clearCache();
   buildGround(); drawTools(); drawShip(); drawTechs();
   SFX.era();
   const e=el('era');
-  e.querySelector('b').textContent='ERA '+RM[era];
-  e.querySelector('span').textContent=ERA_NM[era];
+  e.querySelector('b').textContent=T_('ui.era')+' '+RM[era];
+  e.querySelector('span').textContent=t('era.'+era);
   e.style.opacity=1; setTimeout(()=>e.style.opacity=0,2600);
-  el('eraTag').textContent='ÉPOCA '+RM[epoch]+' · ERA '+RM[era]+' · '+ERA_NM[era];
-  toast('Concessão expandida — novo terreno e minérios liberados');
+  el('eraTag').textContent=eraLabel();
+  toast(T_('msg.expanded'));
   save();
 }
 function buyTech(t){
@@ -611,7 +1003,7 @@ function buyTech(t){
   const c=t.cost(n);
   if(pp<c){ SFX.error(); return; }
   pp-=c; tech[t.id]=n+1; clearCache(); SFX.tech();
-  toast(t.nm+(t.once?' pesquisado':' nível '+(n+1)));
+  toast(t.once?T_('msg.researched',{n:tname(t.id)}):T_('msg.level',{n:tname(t.id),l:n+1}));
   drawTechs(); drawTools();
 }
 
@@ -634,7 +1026,7 @@ function colonyRates(){
 }
 function jumpEpoch(){
   const rates=measureColony();
-  if(!Object.keys(rates).length){ toast('Nenhum extrator rodando — a colônia não renderia nada'); SFX.error(); return; }
+  if(!Object.keys(rates).length){ toast(T_('msg.noExtractor')); SFX.error(); return; }
   colonies.push({seed:seedStr,epoch,rates}); colRate=null;
   era++; shipped={}; readyJump=false; sel=null; clearCache();
   genWorld(seedStr+'-'+(epoch+1),epoch+1);
@@ -646,11 +1038,11 @@ function jumpEpoch(){
   cam.x=VW/2; cam.y=VH/2-(W+H)*TH/4+20; cam.z=.9;
   SFX.era();
   const e=el('era');
-  e.querySelector('b').textContent='ÉPOCA '+RM[epoch];
-  e.querySelector('span').textContent=EP_NM[epoch]||'';
+  e.querySelector('b').textContent=T_('ui.epoch')+' '+RM[epoch];
+  e.querySelector('span').textContent=T_('ep.'+epoch);
   e.style.opacity=1; setTimeout(()=>e.style.opacity=0,2800);
-  el('eraTag').textContent='ÉPOCA '+RM[epoch]+' · ERA '+RM[era]+' · '+ERA_NM[era];
-  toast('Planalto arquivado como colônia — o terminal já está entregando');
+  el('eraTag').textContent=eraLabel();
+  toast(T_('msg.archived'));
   save();
 }
 
@@ -1210,56 +1602,56 @@ function drawTools(){
   let html='',g='';
   for(const k of ORDER){
     const d=B[k];
-    if(d.grp!==g){ g=d.grp; html+=`<div class="grp">${g}</div>`; }
+    if(d.grp!==g){ g=d.grp; html+=`<div class="grp">${t('grp.'+g)}</div>`; }
     const lock=d.era>era;
     html+=`<button class="tool ${tool===k?'on':''} ${lock?'off':''}" data-k="${k}">
       <span class="key">${d.key}</span><span class="sw" style="background:${d.top}"></span>
-      <span class="nm">${lock?'era '+RM[d.era]:d.nm}</span>
-      <span class="pr num">${d.cost?'$'+d.cost:'—'}</span></button>`;
+      <span class="nm">${lock?T_('tool.era',{n:RM[d.era]}):mname(k)}</span>
+      <span class="pr num">${d.cost?'$'+nfmt(d.cost):'—'}</span></button>`;
   }
   el('tools').innerHTML=html;
   el('tools').querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
     const k=b.dataset.k;
-    if(B[k].era>era){ toast('Avance a era para liberar'); SFX.error(); return; }
+    if(B[k].era>era){ toast(T_('msg.advance')); SFX.error(); return; }
     tool=k; drawTools();
   });
 }
 function drawShip(){
   const s=SHIPMENTS[era];
-  el('shipTag').textContent='ERA '+RM[era];
-  if(!s){ el('ship').innerHTML='<div class="desc">Sem remessa definida para esta era.</div>'; return; }
-  let h=`<div class="desc" style="margin:0 0 6px">Entregue no Terminal para abrir a próxima era.</div>`;
+  el('shipTag').textContent=T_('ui.era')+' '+RM[era];
+  if(!s){ el('ship').innerHTML='<div class="desc">'+T_('shp.none')+'</div>'; return; }
+  let h=`<div class="desc" style="margin:0 0 6px">${T_('shp.deliver')}</div>`;
   for(const k in s){
     const got=Math.min(shipped[k]||0,s[k]),pct=got/s[k]*100;
     h+=`<div class="ship ${got>=s[k]?'ok':''}">
       <div class="row" style="justify-content:space-between">
-        <span><i class="dot" style="display:inline-block;background:${ITEMS[k].c}"></i> ${ITEMS[k].n}</span>
+        <span><i class="dot" style="display:inline-block;background:${ITEMS[k].c}"></i> ${iname(k)}</span>
         <b class="num">${got}/${s[k]}</b></div>
       <div class="bar"><i style="width:${pct}%"></i></div></div>`;
   }
-  if(!hasTerminal) h+=`<div class="desc" style="color:#e0604f">Nenhum Terminal construído (tecla X, de graça).</div>`;
+  if(!hasTerminal) h+=`<div class="desc" style="color:#e0604f">${T_('shp.noTerminal')}</div>`;
   if(readyJump||(era%3===0&&shipDone())){
     readyJump=true;
     const r=measureColony();
-    const lst=Object.keys(r).map(k=>`<span class="chip"><i class="dot" style="background:${ITEMS[k].c}"></i>${ITEMS[k].n} <b>${r[k]}/min</b></span>`).join('');
-    h+=`<div class="desc" style="margin-top:10px;color:#f2a03d">Época concluída. Partindo, este planalto vira colônia e continua mandando:</div>
-        <div class="chips">${lst||'<span class="desc">nada — sem extrator ativo</span>'}</div>
-        <button class="jump" id="jumpBtn">PARTIR PARA A PRÓXIMA ÉPOCA</button>`;
+    const lst=Object.keys(r).map(k=>`<span class="chip"><i class="dot" style="background:${ITEMS[k].c}"></i>${iname(k)} <b>${r[k]}${T_('ui.min')}</b></span>`).join('');
+    h+=`<div class="desc" style="margin-top:10px;color:#f2a03d">${T_('shp.epochDone')}</div>
+        <div class="chips">${lst||'<span class="desc">'+T_('shp.nothing')+'</span>'}</div>
+        <button class="jump" id="jumpBtn">${T_('shp.jump')}</button>`;
   } else if(era>=MAX_ERA&&shipDone()){
-    h+=`<div class="desc" style="color:#f2a03d;margin-top:8px">Era V em desenvolvimento. A fábrica continua rodando.</div>`;
+    h+=`<div class="desc" style="color:#f2a03d;margin-top:8px">${T_('shp.wip')}</div>`;
   }
   el('ship').innerHTML=h;
   const jb=el('jumpBtn');
-  if(jb) jb.onclick=()=>{ if(confirm('Partir? Este planalto vira colônia e você recomeça num mapa novo, levando tecnologia e créditos.')) jumpEpoch(); };
+  if(jb) jb.onclick=()=>{ if(confirm(T_('dlg.jump'))) jumpEpoch(); };
 }
 function drawColonies(){
   const box=el('colPanel');
   if(!colonies.length){ box.style.display='none'; return; }
   box.style.display='';
-  el('colTag').textContent=colonies.length+(colonies.length>1?' ativas':' ativa');
+  el('colTag').textContent=colonies.length+' '+(colonies.length>1?T_('col.many'):T_('col.one'));
   const rt=colonyRates();
-  el('cols').innerHTML=colonies.map((c,i)=>`<div class="col">Colônia ${RM[c.epoch]||i+1} · semente <b>${c.seed}</b></div>`).join('')
-    +`<div class="chips">`+Object.keys(rt).map(k=>`<span class="chip"><i class="dot" style="background:${ITEMS[k].c}"></i>${ITEMS[k].n} <b>${Math.round(rt[k]*10)/10}/min</b></span>`).join('')+`</div>`;
+  el('cols').innerHTML=colonies.map((c,i)=>`<div class="col">${T_('col.line',{n:RM[c.epoch]||i+1,s:c.seed})}</div>`).join('')
+    +`<div class="chips">`+Object.keys(rt).map(k=>`<span class="chip"><i class="dot" style="background:${ITEMS[k].c}"></i>${iname(k)} <b>${Math.round(rt[k]*10)/10}${T_('ui.min')}</b></span>`).join('')+`</div>`;
 }
 function drawTechs(){
   el('ppTag').textContent=Math.floor(pp)+' PP';
@@ -1267,42 +1659,42 @@ function drawTechs(){
   for(const t of TECH){
     if(t.era>era) continue;
     const n=tech[t.id]||0, done=!!(t.once&&n), c=t.cost(n);
-    h+=`<div class="tech"><div><b>${t.nm}</b> ${t.once?'':`<span class="num" style="color:var(--amber)">nv ${n}</span>`}<small>${t.sub}</small></div>
-      <button class="buy" data-id="${t.id}" ${done||pp<c?'disabled':''}>${done?'✔':c.toLocaleString('pt-BR')+' PP'}</button></div>`;
+    h+=`<div class="tech"><div><b>${tname(t.id)}</b> ${t.once?'':`<span class="num" style="color:var(--amber)">${T_('ui.lvl')} ${n}</span>`}<small>${tsub(t.id)}</small></div>
+      <button class="buy" data-id="${t.id}" ${done||pp<c?'disabled':''}>${done?'✔':nfmt(c)+' PP'}</button></div>`;
   }
-  el('techs').innerHTML=h||'<div class="desc">Construa um Centro de Pesquisa para gerar PP.</div>';
+  el('techs').innerHTML=h||'<div class="desc">'+T_('tech.empty')+'</div>';
   el('techs').querySelectorAll('.buy').forEach(b=>b.onclick=()=>buyTech(TECH.find(t=>t.id===b.dataset.id)));
 }
 function inspect(){
   const t=hover?at(hover[0],hover[1]):null;
   const b=sel||(t&&(t.top||t.b));
   const body=el('inspectBody');
-  el('selTag').textContent=sel?'travada':'';
+  el('selTag').textContent=sel?T_('ui.locked'):'';
   if(!b){
     const d=B[tool];
-    body.innerHTML=`<div class="kv"><span>${d.nm}</span><b class="num" style="color:#7fd18a">${d.cost?'$'+d.cost:'grátis'}</b></div>
-      <div class="desc">${d.desc}</div>
-      ${d.pw?`<div class="kv" style="margin-top:6px"><span>Consumo</span><b class="num" style="color:var(--volt)">${d.pw} MW</b></div>`:''}
-      ${t&&t.ore?`<div class="kv" style="margin-top:6px"><span>Depósito</span><b style="color:${ITEMS[t.ore].c}">${ITEMS[t.ore].n}</b></div>`:''}
-      ${t&&!inEra(hover[0],hover[1])?`<div class="desc" style="color:#e0604f">Fora da concessão liberada.</div>`:''}`;
+    body.innerHTML=`<div class="kv"><span>${mname(tool)}</span><b class="num" style="color:#7fd18a">${d.cost?'$'+nfmt(d.cost):T_('ui.free')}</b></div>
+      <div class="desc">${mdesc(tool)}</div>
+      ${d.pw?`<div class="kv" style="margin-top:6px"><span>${T_('ins.use')}</span><b class="num" style="color:var(--volt)">${d.pw} MW</b></div>`:''}
+      ${t&&t.ore?`<div class="kv" style="margin-top:6px"><span>${T_('ins.dep')}</span><b style="color:${ITEMS[t.ore].c}">${iname(t.ore)}</b></div>`:''}
+      ${t&&!inEra(hover[0],hover[1])?`<div class="desc" style="color:#e0604f">${T_('ins.outside')}</div>`:''}`;
     return;
   }
   const d=B[b.type];
-  let h=`<div class="kv"><span>${d.nm}${b.layer?' · deck':''}</span><b class="num" style="color:var(--volt)">${d.pw?d.pw+' MW':'—'}</b></div>`;
-  if(d.ore){ const o=at(b.x,b.y).ore; h+=`<div class="kv"><span>Extraindo</span><b style="color:${o?ITEMS[o].c:'#888'}">${o?ITEMS[o].n:'—'}</b></div>`; }
-  if(d.fuel) h+=`<div class="kv"><span>Queimando</span><b>${b.burn>0?(b.fuel==='betume'?'betume · 60 MW':'carvão · 30 MW'):'parado'}</b></div>`;
-  if(b.rec) h+=`<div class="kv"><span>Produzindo</span><b>${ITEMS[b.rec.out[0].i].n}</b></div><div class="prog"><i style="width:${(b.prog*100).toFixed(0)}%"></i></div>`;
+  let h=`<div class="kv"><span>${mname(b.type)}${b.layer?T_('ins.deck'):''}</span><b class="num" style="color:var(--volt)">${d.pw?d.pw+' MW':'—'}</b></div>`;
+  if(d.ore){ const o=at(b.x,b.y).ore; h+=`<div class="kv"><span>${T_('ins.mining')}</span><b style="color:${o?ITEMS[o].c:'#888'}">${o?iname(o):'—'}</b></div>`; }
+  if(d.fuel) h+=`<div class="kv"><span>${T_('ins.burning')}</span><b>${b.burn>0?(b.fuel==='betume'?T_('ins.bit'):T_('ins.coal')):T_('ins.idle')}</b></div>`;
+  if(b.rec) h+=`<div class="kv"><span>${T_('ins.making')}</span><b>${iname(b.rec.out[0].i)}</b></div><div class="prog"><i style="width:${(b.prog*100).toFixed(0)}%"></i></div>`;
   const inv=Object.entries(b.items||{}).filter(([k,v])=>v>0);
-  if(inv.length) h+=`<div class="chips">`+inv.map(([k,v])=>`<span class="chip"><i class="dot" style="background:${ITEMS[k].c}"></i>${ITEMS[k].n} <b>${v}</b></span>`).join('')+`</div>`;
+  if(inv.length) h+=`<div class="chips">`+inv.map(([k,v])=>`<span class="chip"><i class="dot" style="background:${ITEMS[k].c}"></i>${iname(k)} <b>${v}</b></span>`).join('')+`</div>`;
   if(b.out) for(let p=0;p<2;p++) if(b.out[p].length)
-    h+=`<div class="chips"><span class="chip" style="border-color:${p?'#7a3f5c':'#3c5a45'}">saída ${p?'direita':'frente'} <b>${b.out[p].length}</b></span></div>`;
+    h+=`<div class="chips"><span class="chip" style="border-color:${p?'#7a3f5c':'#3c5a45'}">${p?T_('ins.outR'):T_('ins.outF')} <b>${b.out[p].length}</b></span></div>`;
   const rs=recipesFor(b.type);
   if(rs.length){
-    h+=`<div class="desc" style="margin-top:8px">Receita</div>`;
-    h+=`<button class="rc ${b.lock==null?'on':''}" data-r="-1">automática</button>`;
+    h+=`<div class="desc" style="margin-top:8px">${T_('ins.recipe')}</div>`;
+    h+=`<button class="rc ${b.lock==null?'on':''}" data-r="-1">${T_('ins.auto')}</button>`;
     rs.forEach((r,i)=>{
-      const ins=Object.entries(r.in).map(([k,q])=>q+'× '+ITEMS[k].n).join(' + ');
-      const outs=r.out.map(o=>o.q+'× '+ITEMS[o.i].n+(o.port?' (direita)':'')).join(' + ');
+      const ins=Object.entries(r.in).map(([k,q])=>q+'× '+iname(k)).join(' + ');
+      const outs=r.out.map(o=>o.q+'× '+iname(o.i)+(o.port?' ('+T_('ins.outR')+')':'')).join(' + ');
       h+=`<button class="rc ${b.lock===i?'on':''}" data-r="${i}">${ins} → ${outs} · ${r.t}s</button>`;
     });
   }
@@ -1316,7 +1708,7 @@ function inspect(){
 }
 function hud(){
   el('money').textContent=fmt(money);
-  el('rate').textContent=fmt(earnLog.reduce((a,b)=>a+b.v,0))+' /min';
+  el('rate').textContent=fmt(earnLog.reduce((a,b)=>a+b.v,0))+' '+T_('ui.min');
   el('ppv').textContent=Math.floor(pp)+' PP';
   el('powertxt').textContent=Math.round(supply)+'/'+Math.round(demand);
   const pct=demand>0?Math.min(100,supply/demand*100):100;
@@ -1325,6 +1717,33 @@ function hud(){
   checkShip();
   inspect(); drawShip(); drawTechs();
 }
+function applyStatic(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
+  document.querySelectorAll('[data-i18nh]').forEach(e=>e.innerHTML=t(e.dataset.i18nh));
+  document.querySelectorAll('[data-i18nt]').forEach(e=>e.title=t(e.dataset.i18nt));
+  el('sound').textContent=A.on?T_('ui.sound'):T_('ui.mute');
+  el('eraTag').textContent=eraLabel();
+}
+function setLang(l){
+  if(!STR[l]) return;
+  lang=l;
+  try{ localStorage.setItem('f7lang',l); }catch(e){}
+  applyStatic();
+  if(tiles.length){ drawTools(); drawShip(); drawTechs(); drawColonies(); inspect(); hud(); }
+}
+function initLang(){
+  let l=null;
+  try{ l=localStorage.getItem('f7lang'); }catch(e){}
+  if(!STR[l]){ const n=(navigator.language||'pt').slice(0,2).toLowerCase(); l=STR[n]?n:'pt'; }
+  lang=l;
+  const sel=el('langSel');
+  sel.innerHTML=Object.keys(LANGS).map(k=>`<option value="${k}">${LANGS[k]}</option>`).join('');
+  sel.value=lang;
+  sel.onchange=()=>setLang(sel.value);
+  applyStatic();
+}
+
 let toastT;
 function toast(m){ const t=el('toast'); t.textContent=m; t.style.opacity=1; clearTimeout(toastT); toastT=setTimeout(()=>t.style.opacity=0,2100); }
 
@@ -1380,26 +1799,26 @@ addEventListener('keydown',e=>{
   if(k==='N'){ toggleSound(); return; }
   if(k==='ESCAPE'||e.key==='Escape'){ sel=null; inspect(); return; }
   const t=ORDER.find(o=>B[o].key===k);
-  if(t){ if(B[t].era<=era){tool=t;drawTools()} else {toast('Avance a era para liberar');SFX.error()} }
+  if(t){ if(B[t].era<=era){tool=t;drawTools()} else {toast(T_('msg.advance'));SFX.error()} }
 });
 addEventListener('keyup',e=>{ if(e.code==='Space'){spaceDown=false;cv.style.cursor='crosshair'} });
 function toggleSound(){
   initAudio(); A.on=!A.on;
   if(A.master) A.master.gain.value=A.on?.55:0;
-  el('sound').textContent=A.on?'♪ som':'✕ mudo';
+  el('sound').textContent=A.on?T_('ui.sound'):T_('ui.mute');
 }
 el('sound').onclick=toggleSound;
-el('seedTag').onclick=()=>{ try{navigator.clipboard.writeText(seedStr);toast('Semente '+seedStr+' copiada')}catch(e){toast('Semente: '+seedStr)} };
+el('seedTag').onclick=()=>{ try{navigator.clipboard.writeText(seedStr);toast(T_('msg.seedCopied',{s:seedStr}))}catch(e){toast(T_('msg.seedIs',{s:seedStr}))} };
 el('reset').onclick=()=>{
-  const sd=prompt('Semente do novo planalto (em branco = aleatória):','');
+  const sd=prompt(T_('dlg.seed'),'');
   if(sd===null) return;
   money=900; pp=0; era=1; epoch=1; colonies=[]; colRate=null; readyJump=false;
   tech={}; shipped={}; produced={}; soldTotal=0; earnLog=[];
   parts=[]; floats=[]; sel=null; hasTerminal=false; clearCache();
   genWorld(sd,1); buildGround(); drawTools(); drawShip(); drawTechs(); drawColonies();
-  el('eraTag').textContent='ÉPOCA I · ERA I · ASSENTAMENTO';
+  el('eraTag').textContent=eraLabel();
   cam.x=VW/2; cam.y=VH/2-(W+H)*TH/4+20; cam.z=1;
-  save(); toast('Planalto novo · semente '+seedStr);
+  save(); toast(T_('msg.newMap',{s:seedStr}));
 };
 
 /* ═══════════════════ SAVE ═══════════════════ */
@@ -1431,7 +1850,7 @@ function serialize(){
 }
 let flashT;
 function save(){ try{ Store.set(KEY,JSON.stringify(serialize())).then(()=>{
-  const b=el('exp'); b.textContent='✓ salvo'; clearTimeout(flashT); flashT=setTimeout(()=>b.textContent='⭳ exportar',1200);
+  const b=el('exp'); b.textContent=T_('ui.saved'); clearTimeout(flashT); flashT=setTimeout(()=>b.textContent=T_('ui.export'),1200);
 }); }catch(e){} }
 function apply(d){
   if(!d||!d.ore||d.ore.length!==W*H) return false;
@@ -1451,7 +1870,7 @@ function apply(d){
   }
   money=d.money||900; pp=d.pp||0; shipped=d.shipped||{}; produced=d.produced||{}; soldTotal=d.soldTotal||0;
   sel=null; parts=[]; floats=[]; earnLog=[];
-  el('eraTag').textContent='ÉPOCA '+RM[epoch]+' · ERA '+RM[era]+' · '+ERA_NM[era];
+  el('eraTag').textContent=eraLabel();
   drawColonies();
   return true;
 }
@@ -1461,21 +1880,21 @@ function exportFile(){
     const blob=new Blob([JSON.stringify(serialize())],{type:'application/json'});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
     a.download='fundicao7-'+seedStr+'-era'+era+'.json'; a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href),4000); toast('Save exportado');
-  }catch(e){ toast('Não consegui gerar o arquivo'); }
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000); toast(T_('msg.exported'));
+  }catch(e){ toast(T_('msg.exportFail')); }
 }
 
 function openTx(mode){
   el('tx').style.display='grid';
   const a=el('txa'), ld=el('txLoad');
   if(mode==='out'){
-    el('txTitle').textContent='Copiar save';
-    el('txHelp').textContent='O preview bloqueia download de arquivo. Copie este texto e cole na outra versão pelo botão "importar".';
+    el('txTitle').textContent=T_('tx.out');
+    el('txHelp').textContent=T_('tx.outHelp');
     a.value=JSON.stringify(serialize()); ld.style.display='none';
     setTimeout(()=>{a.focus();a.select()},30);
   }else{
-    el('txTitle').textContent='Colar save';
-    el('txHelp').textContent='Cole aqui o texto copiado da versão anterior e carregue.';
+    el('txTitle').textContent=T_('tx.in');
+    el('txHelp').textContent=T_('tx.inHelp');
     a.value=''; ld.style.display=''; setTimeout(()=>a.focus(),30);
   }
 }
@@ -1485,7 +1904,7 @@ el('txCopy').onclick=()=>{
   let ok=false;
   try{ ok=document.execCommand('copy'); }catch(e){}
   if(!ok){ try{ navigator.clipboard.writeText(a.value); ok=true; }catch(e){} }
-  toast(ok?'Save copiado para a área de transferência':'Selecione o texto e use Ctrl+C');
+  toast(ok?T_('msg.copied'):T_('msg.selectCopy'));
 };
 el('txOut').onclick=()=>openTx('out');
 el('txIn').onclick=()=>openTx('in');
@@ -1495,8 +1914,8 @@ el('txLoad').onclick=()=>{
     if(!apply(d)) throw 0;
     buildGround(); drawTools(); drawShip(); drawTechs(); drawColonies(); save();
     el('tx').style.display='none';
-    toast('Fábrica carregada · semente '+seedStr); SFX.era();
-  }catch(e){ toast('Texto inválido — copie o save inteiro'); SFX.error(); }
+    toast(T_('msg.loaded',{s:seedStr})); SFX.era();
+  }catch(e){ toast(T_('msg.badText')); SFX.error(); }
 };
 el('exp').onclick=exportFile;
 el('impBtn').onclick=()=>el('imp').click();
@@ -1507,8 +1926,8 @@ el('imp').onchange=e=>{
     try{
       if(!apply(JSON.parse(rd.result))) throw 0;
       buildGround(); drawTools(); drawShip(); drawTechs(); drawColonies(); save();
-      toast('Fábrica carregada · semente '+seedStr); SFX.era();
-    }catch(err){ toast('Arquivo de save inválido'); SFX.error(); }
+      toast(T_('msg.loaded',{s:seedStr})); SFX.era();
+    }catch(err){ toast(T_('msg.badFile')); SFX.error(); }
   };
   rd.readAsText(f); e.target.value='';
 };
@@ -1557,6 +1976,7 @@ const isMobile = /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry|Opera 
   || (matchMedia('(pointer:coarse)').matches && Math.min(screen.width,screen.height)<820);
 
 (async function(){
+  initLang();
   if(isMobile){
     el('manual').style.display='none';
     el('block').style.display='grid';
