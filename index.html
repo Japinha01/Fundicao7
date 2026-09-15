@@ -128,7 +128,7 @@
 
   /* ═══ modo celular ═══ */
   #mobBar{position:fixed;left:0;right:0;bottom:0;height:58px;display:none;gap:5px;padding:6px 7px calc(6px + env(safe-area-inset-bottom));
-    background:linear-gradient(180deg,rgba(22,29,38,.97),rgba(11,15,20,.99));border-top:1px solid var(--line2);z-index:5}
+    background:linear-gradient(180deg,rgba(22,29,38,.97),rgba(11,15,20,.99));border-top:1px solid var(--line2);z-index:7}
   body.mob #mobBar{display:flex}
   .mb{flex:1;font:inherit;font-size:10.5px;background:#141b23;border:1px solid #26313c;color:#93a4b4;border-radius:3px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:3px;cursor:pointer;min-width:0}
@@ -141,6 +141,8 @@
   #sheet.open{transform:none}
   .sheetTools{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
   .grab{width:44px;height:4px;background:#46566a;border-radius:2px;margin:0 auto 10px}
+  #sheetClose{position:absolute;right:10px;top:8px;width:34px;height:34px;font:inherit;font-size:17px;line-height:1;
+    background:#141b23;border:1px solid var(--line);color:#c6d3df;border-radius:3px;cursor:pointer;z-index:2}
   body.mob #top{gap:12px;padding:6px 10px;flex-wrap:nowrap;overflow:hidden;top:0;left:0;right:0;border-radius:0;
     padding-top:calc(6px + env(safe-area-inset-top))}
   body.mob .logo{display:none}
@@ -230,13 +232,12 @@
 
 <div id="mobBar">
   <button class="mb" data-m="build"><i>▣</i><span data-i18n="mob.build">Construir</span></button>
-  <button class="mb" data-m="move"><i>✥</i><span data-i18n="mob.move">Mover</span></button>
   <button class="mb" data-m="pick"><i>◉</i><span data-i18n="mob.pick">Inspecionar</span></button>
   <button class="mb" data-m="del"><i>✕</i><span data-i18n="mob.del">Demolir</span></button>
   <button class="mb" id="mobRot"><i>↘</i><span data-i18n="mob.rot">Girar</span></button>
   <button class="mb" id="mobSheet"><i>☰</i><span data-i18n="mob.panels">Painéis</span></button>
 </div>
-<div id="sheet" class="panel"><div class="grab"></div></div>
+<div id="sheet" class="panel"><button id="sheetClose">✕</button><div class="grab"></div></div>
 
 <div id="manual">
   <div class="card panel">
@@ -322,7 +323,8 @@ pt:{
  'msg.copied':'Save copiado para a área de transferência','msg.selectCopy':'Selecione o texto e use Ctrl+C',
  'dlg.jump':'Partir? Este planalto vira colônia e você recomeça num mapa novo, levando tecnologia e créditos.',
  'dlg.seed':'Semente do novo planalto (em branco = aleatória):',
-   'mob.build':'Construir',
+   'mob.tip':'Toque para construir · segure e arraste para desenhar a esteira · deslize para mover a câmera',
+ 'mob.build':'Construir',
  'mob.move':'Mover',
  'mob.pick':'Inspecionar',
  'mob.del':'Demolir',
@@ -451,7 +453,8 @@ en:{
  'msg.copied':'Save copied to the clipboard','msg.selectCopy':'Select the text and press Ctrl+C',
  'dlg.jump':'Depart? This plateau becomes a colony and you restart on a new map, keeping technology and credits.',
  'dlg.seed':'Seed for the new plateau (blank = random):',
-   'mob.build':'Build',
+   'mob.tip':'Tap to build · hold and drag to draw a belt · swipe to pan',
+ 'mob.build':'Build',
  'mob.move':'Pan',
  'mob.pick':'Inspect',
  'mob.del':'Demolish',
@@ -580,7 +583,8 @@ ja:{
  'msg.copied':'セーブをクリップボードにコピーしました','msg.selectCopy':'テキストを選択して Ctrl+C を押してください',
  'dlg.jump':'出発しますか？ この高原は植民地となり、技術とクレジットを持って新しいマップで再出発します。',
  'dlg.seed':'新しい高原のシード（空欄でランダム）:',
-   'mob.build':'建設',
+   'mob.tip':'タップで建設 · 長押しドラッグでベルト敷設 · スワイプで視点移動',
+ 'mob.build':'建設',
  'mob.move':'移動',
  'mob.pick':'情報',
  'mob.del':'解体',
@@ -709,7 +713,8 @@ ru:{
  'msg.copied':'Сейв скопирован в буфер обмена','msg.selectCopy':'Выделите текст и нажмите Ctrl+C',
  'dlg.jump':'Отправиться? Это плато станет колонией, а вы начнёте на новой карте, сохранив технологии и кредиты.',
  'dlg.seed':'Сид нового плато (пусто — случайный):',
-   'mob.build':'Строить',
+   'mob.tip':'Нажмите, чтобы строить · удержание и перетаскивание — лента · свайп — камера',
+ 'mob.build':'Строить',
  'mob.move':'Камера',
  'mob.pick':'Осмотр',
  'mob.del':'Снос',
@@ -1798,6 +1803,7 @@ function drawTools(){
   let html='',g='';
   for(const k of ORDER){
     const d=B[k];
+    if(MOB&&d.tool) continue;
     if(d.grp!==g){ g=d.grp; html+=`<div class="grp">${t('grp.'+g)}</div>`; }
     const lock=d.era>era;
     html+=`<button class="tool ${tool===k?'on':''} ${lock?'off':''}" data-k="${k}">
@@ -1974,19 +1980,48 @@ function tapSelect(p){
   inspect();
   if(MOB) openSheet(true);
 }
+/* celular: toque = agir · segurar e arrastar = desenhar · deslizar = mover a câmera */
+let touch=null, holdT=null;
+function cancelHold(){ if(holdT){clearTimeout(holdT);holdT=null;} }
+function actAt(p){
+  hover=p;
+  if(mode==='del'){ demolish(p[0],p[1]); return; }
+  if(mode==='pick'){ tapSelect(p); return; }
+  place(p[0],p[1],tool,dir);
+}
+function mobDown(e){
+  if(el('sheet').classList.contains('open')) openSheet(false);
+  touch={id:e.pointerId,x:e.clientX,y:e.clientY,act:null};
+  cancelHold();
+  holdT=setTimeout(()=>{
+    if(!touch||touch.act) return;
+    touch.act='draw';
+    const p=pick(touch.x,touch.y);
+    hover=p; dragging=true; lastTile=p;
+    if(mode!=='pick') actAt(p);
+    if(navigator.vibrate) navigator.vibrate(12);
+  },250);
+}
 cv.addEventListener('pointerdown',e=>{
   initAudio(); cv.setPointerCapture(e.pointerId);
   PTR.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(PTR.size>=2){ pinchStart(); return; }
+  if(PTR.size>=2){ cancelHold(); touch=null; panning=false; dragging=false; pinchStart(); return; }
+  if(MOB){ mobDown(e); return; }
   const p=pick(e.clientX,e.clientY);
-  if(e.button===1||spaceDown||(MOB&&mode==='move')){ panning=true; panStart=[e.clientX-cam.x,e.clientY-cam.y]; return; }
-  if(e.button===2||(MOB&&mode==='del')){ hover=p; demolish(p[0],p[1]); if(MOB){dragging=true;lastTile=p;} return; }
-  if(tool==='cursor'||(MOB&&mode==='pick')){ hover=p; tapSelect(p); return; }
+  if(e.button===1||spaceDown){ panning=true; panStart=[e.clientX-cam.x,e.clientY-cam.y]; return; }
+  if(e.button===2){ demolish(p[0],p[1]); return; }
+  if(tool==='cursor'){ hover=p; tapSelect(p); return; }
   hover=p; dragging=true; lastTile=p; place(p[0],p[1],tool,dir);
 });
 cv.addEventListener('pointermove',e=>{
   if(PTR.has(e.pointerId)) PTR.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(PTR.size>=2){ pinchMove(); return; }
+  if(MOB&&touch&&e.pointerId===touch.id&&!touch.act){
+    if(Math.hypot(e.clientX-touch.x,e.clientY-touch.y)>12){
+      cancelHold(); touch.act='pan';
+      panning=true; panStart=[e.clientX-cam.x,e.clientY-cam.y];
+    }
+  }
   if(panning){ cam.x=e.clientX-panStart[0]; cam.y=e.clientY-panStart[1]; return; }
   const p=pick(e.clientX,e.clientY); hover=p;
   if(MOB&&mode==='del'&&dragging&&lastTile&&(p[0]!==lastTile[0]||p[1]!==lastTile[1])){ demolish(p[0],p[1]); lastTile=p; return; }
@@ -2005,6 +2040,11 @@ cv.addEventListener('pointermove',e=>{
   }
 });
 function endPtr(e){
+  if(MOB&&touch&&e&&e.pointerId===touch.id){
+    cancelHold();
+    if(!touch.act) actAt(pick(e.clientX,e.clientY));
+    touch=null;
+  }
   if(e&&e.pointerId!=null) PTR.delete(e.pointerId);
   if(PTR.size<2) pinch=null;
   if(PTR.size===0){ panning=false; dragging=false; lastTile=null; }
@@ -2037,9 +2077,8 @@ function openSheet(v){
   el('mobSheet').classList.toggle('on',on);
 }
 function setMode(m){
-  mode=m;
+  mode=m; sel=null;
   document.querySelectorAll('#mobBar .mb[data-m]').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
-  if(m!=='pick'){ sel=null; }
   if(m==='build'&&tool==='cursor') tool=ORDER[1];
   drawTools();
 }
@@ -2052,10 +2091,12 @@ function mobileLayout(){
   sh.appendChild(row);
   sh.appendChild(el('side'));
   el('mobSheet').onclick=()=>openSheet();
+  el('sheetClose').onclick=()=>openSheet(false);
   el('mobRot').onclick=()=>{ dir=(dir+1)%4; el('mobRot').querySelector('i').textContent=['↘','↙','↖','↗'][dir]; };
   document.querySelectorAll('#mobBar .mb[data-m]').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
   setMode('build');
   cam.z=1.1;
+  setTimeout(()=>toast(T_('mob.tip')),900);
 }
 function toggleSound(){
   initAudio(); A.on=!A.on;
