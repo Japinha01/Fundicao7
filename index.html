@@ -82,6 +82,17 @@
   .col{font-size:12.5px;color:#c6d3df;padding:4px 0;border-bottom:1px dashed #232c35}
   .col:last-child{border:0}
 
+  #tut{position:fixed;left:50%;bottom:58px;transform:translateX(-50%);width:min(440px,92vw);padding:12px 16px;z-index:10;display:none}
+  #tut h4{font-size:10px;letter-spacing:.18em;color:var(--amber);display:flex;justify-content:space-between;gap:14px;margin-bottom:7px}
+  #tut h4 span{color:var(--mute);font-weight:400;letter-spacing:.1em;white-space:nowrap}
+  #tut p{font-size:13.5px;line-height:1.55;color:#c6d3df}
+  #tut p b{color:var(--amber)}
+  #tut .bar{display:flex;gap:8px;margin-top:11px;justify-content:flex-end}
+  #tut button{font:inherit;font-size:12.5px;padding:6px 12px;border-radius:2px;cursor:pointer;border:1px solid var(--line);background:#141b23;color:#c6d3df}
+  #tut button.p{background:var(--amber);color:#16202a;border:0;font-weight:700}
+  #tut button:hover{border-color:var(--line2)}
+  .tut-hl{position:relative;z-index:5;border-color:var(--amber)!important;animation:tutpulse 1.3s ease-in-out infinite}
+  @keyframes tutpulse{0%,100%{box-shadow:0 0 0 2px var(--amber),0 0 14px 2px rgba(242,160,61,.55)}50%{box-shadow:0 0 0 2px var(--amber),0 0 24px 7px rgba(242,160,61,.22)}}
   #hint{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);padding:6px 14px;font-size:12.5px;color:var(--mute);white-space:nowrap;z-index:2}
   #hint kbd{font-family:inherit;color:var(--ink);border:1px solid var(--line);padding:0 5px;border-radius:2px;margin:0 1px}
   #toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);padding:7px 16px;border-radius:2px;background:rgba(18,25,33,.96);
@@ -144,6 +155,7 @@
   <button class="iconbtn" id="impBtn" data-i18n="ui.import">⭱ importar arquivo</button>
   <button class="iconbtn" id="txOut" data-i18n="ui.copy">⎘ copiar</button>
   <button class="iconbtn" id="txIn" data-i18n="ui.paste">⎗ colar save</button>
+  <button class="iconbtn" id="tutBtn" data-i18n="ui.tutorial">❔ tutorial</button>
   <button class="iconbtn" id="reset" data-i18n="ui.new">nova fábrica</button>
   <input type="file" id="imp" accept=".json,application/json" style="display:none">
 </div>
@@ -158,6 +170,8 @@
 </div>
 
 <div id="hint" class="panel" data-i18nh="hint"><kbd>S</kbd> cursor · <kbd>arrastar</kbd> esteira · <kbd>R</kbd> girar · <kbd>dir.</kbd> demolir · <kbd>espaço</kbd> câmera · <kbd>scroll</kbd> zoom · <kbd>N</kbd> mudo</div>
+
+<div id="tut" class="panel"></div>
 <div id="toast"></div>
 
 <div id="block"><div class="card panel">
@@ -223,7 +237,7 @@ pt:{
  'ui.credits':'CRÉDITOS','ui.revenue':'RECEITA','ui.research':'PESQUISA','ui.power':'ENERGIA','ui.seed':'SEMENTE',
  'ui.selection':'SELEÇÃO','ui.shipment':'REMESSA','ui.colonies':'COLÔNIAS','ui.locked':'travada',
  'ui.sound':'♪ som','ui.mute':'✕ mudo','ui.export':'⭳ exportar','ui.saved':'✓ salvo','ui.import':'⭱ importar arquivo',
- 'ui.copy':'⎘ copiar','ui.paste':'⎗ colar save','ui.new':'nova fábrica','ui.free':'grátis','ui.lvl':'nv',
+ 'ui.copy':'⎘ copiar','ui.paste':'⎗ colar save','ui.new':'nova fábrica','ui.tutorial':'❔ tutorial','ui.free':'grátis','ui.lvl':'nv',
  'ui.epoch':'ÉPOCA','ui.era':'ERA','ui.min':'/min','ui.seedCopy':'clique para copiar',
  'grp.FERRAMENTA':'FERRAMENTA','grp.EXTRAÇÃO':'EXTRAÇÃO','grp.LOGÍSTICA':'LOGÍSTICA','grp.PRODUÇÃO':'PRODUÇÃO',
  'grp.ENERGIA':'ENERGIA','grp.DESTINO':'DESTINO',
@@ -238,6 +252,13 @@ pt:{
  'man.l4':'Clique com o <b>cursor</b> (tecla S) em qualquer máquina para travar qual receita ela produz.',
  'man.l5':'Fechada a remessa da Era III, você pode <b>partir</b>: o planalto vira colônia e segue mandando minério por um terminal no mapa novo, onde começa a era do titânio.',
  'man.go':'Assumir a concessão',
+ 'tut.title':'TUTORIAL','tut.progress':'Passo {n} de {t}','tut.skip':'Pular','tut.next':'Entendi','tut.finish':'Concluir',
+ 'tut.ext.body':'Escolha o <b>Extrator</b> (tecla 1), destacado à esquerda, e clique sobre um depósito de minério colorido no mapa. Ele extrai o minério bruto e empurra pela frente.',
+ 'tut.belt.body':'Agora pegue a <b>Esteira</b> (tecla 3) e arraste a partir da saída do extrator até a próxima máquina. Arrastar desenha a linha inteira de uma vez — solte o botão para terminar.',
+ 'tut.prod.body':'Construa uma <b>Fundição</b> (tecla 7) na ponta da esteira. Ela funde minério com carvão: extraia carvão com outro Extrator e leve por esteira até o mesmo lado da máquina.',
+ 'tut.mkt.body':'Leve o que a Fundição produzir até um <b>Mercado</b> (tecla V). Ele vende na hora tudo que chega — a forma mais rápida de virar produção em créditos.',
+ 'tut.ship.body':'O <b>Terminal de Remessa</b> (tecla X) é de graça. Construa um e entregue por esteira os itens pedidos no painel REMESSA, à direita — fechar a remessa avança a era.',
+ 'tut.end.body':'Isso cobre o essencial: extrair, transportar, produzir, vender e enviar. Dali em diante é ligar mais linhas, pesquisar melhorias no Centro de Pesquisa e crescer. Bom jogo!',
  'blk.sub':'DISPONÍVEL APENAS NO COMPUTADOR',
  'blk.p':'Este jogo foi feito para mouse e teclado. Numa tela de toque não há como arrastar esteiras, girar construções ou demolir, então preferi bloquear a entrar num estado quebrado.',
  'blk.l1':'<b>arrastar</b> desenha a linha de esteira inteira','blk.l2':'<b>botão direito</b> demole',
@@ -316,7 +337,7 @@ en:{
  'ui.credits':'CREDITS','ui.revenue':'REVENUE','ui.research':'RESEARCH','ui.power':'POWER','ui.seed':'SEED',
  'ui.selection':'SELECTION','ui.shipment':'SHIPMENT','ui.colonies':'COLONIES','ui.locked':'locked',
  'ui.sound':'♪ sound','ui.mute':'✕ muted','ui.export':'⭳ export','ui.saved':'✓ saved','ui.import':'⭱ import file',
- 'ui.copy':'⎘ copy','ui.paste':'⎗ paste save','ui.new':'new factory','ui.free':'free','ui.lvl':'lv',
+ 'ui.copy':'⎘ copy','ui.paste':'⎗ paste save','ui.new':'new factory','ui.tutorial':'❔ tutorial','ui.free':'free','ui.lvl':'lv',
  'ui.epoch':'EPOCH','ui.era':'ERA','ui.min':'/min','ui.seedCopy':'click to copy',
  'grp.FERRAMENTA':'TOOL','grp.EXTRAÇÃO':'MINING','grp.LOGÍSTICA':'LOGISTICS','grp.PRODUÇÃO':'PRODUCTION',
  'grp.ENERGIA':'POWER','grp.DESTINO':'DESTINATION',
@@ -331,6 +352,13 @@ en:{
  'man.l4':'Click any machine with the <b>cursor</b> (key S) to lock which recipe it runs.',
  'man.l5':'Once the Era III shipment is done you may <b>depart</b>: the plateau becomes a colony and keeps sending ore through a terminal on the new map, where the titanium era begins.',
  'man.go':'Take the concession',
+ 'tut.title':'TUTORIAL','tut.progress':'Step {n} of {t}','tut.skip':'Skip','tut.next':'Got it','tut.finish':'Finish',
+ 'tut.ext.body':'Pick the <b>Miner</b> (key 1), highlighted on the left, and click a colored ore deposit on the map. It pulls raw ore and pushes it out the front.',
+ 'tut.belt.body':'Now grab the <b>Belt</b> (key 3) and drag from the miner\'s output to the next machine. Dragging draws the whole line at once — release to finish.',
+ 'tut.prod.body':'Build a <b>Smelter</b> (key 7) at the end of the belt. It smelts ore with coal: extract coal with another Miner and route it by belt to the same side of the machine.',
+ 'tut.mkt.body':'Carry whatever the Smelter makes to a <b>Market</b> (key V). It sells everything that arrives on the spot — the quickest way to turn output into credits.',
+ 'tut.ship.body':'The <b>Shipping Terminal</b> (key X) is free. Build one and belt over the items requested in the SHIPMENT panel on the right — filling the shipment advances the era.',
+ 'tut.end.body':'That covers the basics: mine, move, produce, sell and ship. From here it\'s about wiring more lines, researching upgrades at the Research Lab, and growing. Have fun!',
  'blk.sub':'AVAILABLE ON DESKTOP ONLY',
  'blk.p':'This game was built for mouse and keyboard. On a touch screen there is no way to drag belts, rotate buildings or demolish, so I would rather block it than let you into a broken state.',
  'blk.l1':'<b>drag</b> draws a whole belt line','blk.l2':'<b>right click</b> demolishes',
@@ -409,7 +437,7 @@ ja:{
  'ui.credits':'クレジット','ui.revenue':'収入','ui.research':'研究','ui.power':'電力','ui.seed':'シード',
  'ui.selection':'選択','ui.shipment':'出荷','ui.colonies':'植民地','ui.locked':'固定中',
  'ui.sound':'♪ 音','ui.mute':'✕ 消音','ui.export':'⭳ 書き出し','ui.saved':'✓ 保存','ui.import':'⭱ ファイル読込',
- 'ui.copy':'⎘ コピー','ui.paste':'⎗ セーブ貼付','ui.new':'新しい工場','ui.free':'無料','ui.lvl':'Lv',
+ 'ui.copy':'⎘ コピー','ui.paste':'⎗ セーブ貼付','ui.new':'新しい工場','ui.tutorial':'❔ チュートリアル','ui.free':'無料','ui.lvl':'Lv',
  'ui.epoch':'時代','ui.era':'期','ui.min':'/分','ui.seedCopy':'クリックでコピー',
  'grp.FERRAMENTA':'ツール','grp.EXTRAÇÃO':'採掘','grp.LOGÍSTICA':'物流','grp.PRODUÇÃO':'生産',
  'grp.ENERGIA':'電力','grp.DESTINO':'出荷先',
@@ -424,6 +452,13 @@ ja:{
  'man.l4':'<b>カーソル</b>（Sキー）で機械をクリックすると、生産するレシピを固定できます。',
  'man.l5':'第III期の出荷を終えると<b>出発</b>できます。高原は植民地となり、新しいマップのターミナルへ鉱石を送り続けます。そこからチタンの時代が始まります。',
  'man.go':'利権を引き受ける',
+ 'tut.title':'チュートリアル','tut.progress':'{n} / {t} 手順','tut.skip':'スキップ','tut.next':'次へ','tut.finish':'完了',
+ 'tut.ext.body':'左に表示されている<b>採掘機</b>（1キー）を選び、マップ上の色付きの鉱床をクリックしてください。鉱石を採掘し、正面へ押し出します。',
+ 'tut.belt.body':'次に<b>ベルトコンベア</b>（3キー）を選び、採掘機の出口から次の機械までドラッグしてください。ドラッグで一気にラインを敷設できます。',
+ 'tut.prod.body':'ベルトの先に<b>製錬炉</b>（7キー）を建てましょう。鉱石を石炭とともに製錬します。別の採掘機で石炭を採り、ベルトで同じ側まで運んでください。',
+ 'tut.mkt.body':'製錬炉が作った製品を<b>市場</b>（Vキー）まで運びましょう。届いたものをその場で売却します — 生産をすぐ資金に変える最短ルートです。',
+ 'tut.ship.body':'<b>出荷ターミナル</b>（Xキー）は無料です。建設して、右側の出荷パネルが求めるアイテムをベルトで届けましょう。出荷を満たすと時代が進みます。',
+ 'tut.end.body':'これで基本は完了です：採掘、輸送、生産、販売、出荷。この先はラインを増やし、研究所でアップグレードを進めて拡大していきましょう。楽しんで！',
  'blk.sub':'PC専用',
  'blk.p':'このゲームはマウスとキーボード向けに作られています。タッチ画面ではベルトのドラッグ、建物の回転、解体ができないため、壊れた状態で遊ばせるよりブロックすることにしました。',
  'blk.l1':'<b>ドラッグ</b>でベルトを一気に敷設','blk.l2':'<b>右クリック</b>で解体',
@@ -502,7 +537,7 @@ ru:{
  'ui.credits':'КРЕДИТЫ','ui.revenue':'ДОХОД','ui.research':'ИССЛЕДОВАНИЯ','ui.power':'ЭНЕРГИЯ','ui.seed':'СИД',
  'ui.selection':'ВЫБОР','ui.shipment':'ОТГРУЗКА','ui.colonies':'КОЛОНИИ','ui.locked':'закреплено',
  'ui.sound':'♪ звук','ui.mute':'✕ без звука','ui.export':'⭳ экспорт','ui.saved':'✓ сохранено','ui.import':'⭱ импорт файла',
- 'ui.copy':'⎘ копировать','ui.paste':'⎗ вставить сейв','ui.new':'новая фабрика','ui.free':'бесплатно','ui.lvl':'ур',
+ 'ui.copy':'⎘ копировать','ui.paste':'⎗ вставить сейв','ui.new':'новая фабрика','ui.tutorial':'❔ обучение','ui.free':'бесплатно','ui.lvl':'ур',
  'ui.epoch':'ЭПОХА','ui.era':'ЭРА','ui.min':'/мин','ui.seedCopy':'нажмите, чтобы скопировать',
  'grp.FERRAMENTA':'ИНСТРУМЕНТ','grp.EXTRAÇÃO':'ДОБЫЧА','grp.LOGÍSTICA':'ЛОГИСТИКА','grp.PRODUÇÃO':'ПРОИЗВОДСТВО',
  'grp.ENERGIA':'ЭНЕРГИЯ','grp.DESTINO':'НАЗНАЧЕНИЕ',
@@ -517,6 +552,13 @@ ru:{
  'man.l4':'Щёлкните по машине <b>курсором</b> (клавиша S), чтобы закрепить рецепт, который она производит.',
  'man.l5':'Закрыв отгрузку Эры III, вы можете <b>отправиться дальше</b>: плато станет колонией и продолжит слать руду через терминал на новой карте, где начинается эра титана.',
  'man.go':'Принять концессию',
+ 'tut.title':'ОБУЧЕНИЕ','tut.progress':'Шаг {n} из {t}','tut.skip':'Пропустить','tut.next':'Понятно','tut.finish':'Завершить',
+ 'tut.ext.body':'Выберите <b>Добытчика</b> (клавиша 1), подсвеченного слева, и кликните по цветному месторождению на карте. Он добывает руду и выталкивает её вперёд.',
+ 'tut.belt.body':'Теперь возьмите <b>Конвейер</b> (клавиша 3) и протяните линию от выхода добытчика до следующей машины. Перетаскивание сразу прокладывает всю линию — отпустите кнопку, чтобы закончить.',
+ 'tut.prod.body':'Постройте <b>Плавильню</b> (клавиша 7) в конце конвейера. Она плавит руду с углём: добудьте уголь ещё одним Добытчиком и подведите его конвейером к той же стороне машины.',
+ 'tut.mkt.body':'Отвезите то, что производит Плавильня, к <b>Рынку</b> (клавиша V). Он мгновенно продаёт всё, что приходит — самый быстрый способ превратить продукцию в кредиты.',
+ 'tut.ship.body':'<b>Отгрузочный терминал</b> (клавиша X) бесплатный. Постройте его и подвезите конвейером предметы, которые запрашивает панель ОТГРУЗКИ справа — закрыв отгрузку, вы продвинете эру.',
+ 'tut.end.body':'Это покрывает основы: добыча, перевозка, производство, продажа и отгрузка. Дальше — стройте больше линий, исследуйте улучшения в Лаборатории и расширяйтесь. Удачной игры!',
  'blk.sub':'ТОЛЬКО ДЛЯ КОМПЬЮТЕРА',
  'blk.p':'Игра сделана под мышь и клавиатуру. На сенсорном экране нельзя протянуть ленту, повернуть здание или снести его, поэтому лучше заблокировать вход, чем пустить в сломанное состояние.',
  'blk.l1':'<b>перетаскивание</b> строит всю линию ленты','blk.l2':'<b>правая кнопка</b> сносит',
@@ -918,6 +960,7 @@ function place(x,y,type,d,silent){
     if(def.unique) hasTerminal=true;
   }
   puff(x,y,onTop?PH:0); SFX.place();
+  if(tutOn) tutOnPlace(type);
   return true;
 }
 function demolish(x,y){
@@ -1597,6 +1640,57 @@ function render(){
   ctx.fillStyle=vg; ctx.fillRect(0,0,VW,VH);
 }
 
+/* ═══════════════════ TUTORIAL ═══════════════════ */
+const TUT_KEY='fundicao7-tutorial-v1';
+const TUT_STEPS=[
+  {k:'ext',  sel:'#tools [data-k="extrator"]', type:'extrator'},
+  {k:'belt', sel:'#tools [data-k="esteira"]',  type:'esteira'},
+  {k:'prod', sel:'#tools [data-k="fundicao"]', type:'fundicao'},
+  {k:'mkt',  sel:'#tools [data-k="mercado"]',  type:'mercado'},
+  {k:'ship', sel:'#tools [data-k="terminal"]', type:'terminal'},
+  {k:'end',  sel:null, type:null}
+];
+let tutOn=false, tutIx=-1, tutHlEl=null;
+function tutHighlight(sel){
+  if(tutHlEl){ tutHlEl.classList.remove('tut-hl'); tutHlEl=null; }
+  if(!sel) return;
+  const e=document.querySelector(sel);
+  if(e){ e.classList.add('tut-hl'); tutHlEl=e; e.scrollIntoView({block:'nearest'}); }
+}
+function tutRender(){
+  const s=TUT_STEPS[tutIx]; if(!s) return;
+  const last=tutIx===TUT_STEPS.length-1;
+  const panel=el('tut');
+  panel.innerHTML=`<h4>${T_('tut.title')}<span>${last?'':T_('tut.progress',{n:tutIx+1,t:TUT_STEPS.length-1})}</span></h4>
+    <p>${T_('tut.'+s.k+'.body')}</p>
+    <div class="bar">
+      <button id="tutSkip">${T_('tut.skip')}</button>
+      ${last?`<button class="p" id="tutNext">${T_('tut.finish')}</button>`:''}
+    </div>`;
+  panel.style.display='block';
+  el('tutSkip').onclick=tutEnd;
+  const nb=el('tutNext'); if(nb) nb.onclick=tutEnd;
+  tutHighlight(s.sel);
+}
+function tutStart(){ tutOn=true; tutIx=0; tutRender(); }
+function tutAdvance(){
+  tutIx++;
+  if(tutIx>=TUT_STEPS.length){ tutEnd(); return; }
+  tutRender();
+}
+function tutEnd(){
+  tutOn=false; tutIx=-1;
+  tutHighlight(null);
+  el('tut').style.display='none';
+  try{ localStorage.setItem(TUT_KEY,'1'); }catch(e){}
+}
+function tutOnPlace(type){
+  if(!tutOn) return;
+  const s=TUT_STEPS[tutIx];
+  if(s&&s.type===type) tutAdvance();
+}
+el('tutBtn').onclick=tutStart;
+
 /* ═══════════════════ HUD ═══════════════════ */
 function drawTools(){
   let html='',g='';
@@ -1615,6 +1709,7 @@ function drawTools(){
     if(B[k].era>era){ toast(T_('msg.advance')); SFX.error(); return; }
     tool=k; drawTools();
   });
+  if(tutOn) tutHighlight(TUT_STEPS[tutIx].sel);
 }
 function drawShip(){
   const s=SHIPMENTS[era];
@@ -1986,7 +2081,11 @@ const isMobile = /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry|Opera 
   if(!await load()) genWorld(null,1);
   buildGround(); drawTools(); drawShip(); drawTechs(); drawColonies();
   cam.x=VW/2; cam.y=VH/2-(W+H)*TH/4+20; cam.z=.75;
-  el('go').onclick=()=>{ el('manual').style.display='none'; initAudio(); };
+  el('go').onclick=()=>{
+    el('manual').style.display='none'; initAudio();
+    let seen=false; try{ seen=localStorage.getItem(TUT_KEY)==='1'; }catch(e){}
+    if(!seen) setTimeout(tutStart,350);
+  };
   started=true; last=performance.now();
   requestAnimationFrame(loop);
 })();
